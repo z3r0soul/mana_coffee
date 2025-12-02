@@ -47,28 +47,29 @@ Además agregamos propiedades y estilos globales para todo el HTML*/
     @apply bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300;
   }
 
-  /*Esta es una clase muy importante*/
+  /*Esta es una clase muy importante, porque desde aquí manejamos la responsividad
+  a través de los breakpoints de Tailwind
+  Breakpoints: sm, md, lg, xl, 2xl
+  hace que el espaciado aumente entre más grande sea la pantalla*/
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
+  /*Al igual que antes, establecemos breakpoints para que el título aumente en tamaño*/
   .section-title {
     @apply text-3xl md:text-4xl font-bold text-mana-brown text-center mb-8;
   }
 }
 
+/*Aquí creamos utilidades personalizadas, pues no vienen por
+defecto en Tailwind*/
 @layer utilities {
   .text-gradient {
     @apply bg-gradient-to-r from-mana-brown to-mana-gold bg-clip-text text-transparent;
   }
 
-  /*Nueva animación para el botón flotante de contacto*/
   .animate-float {
     animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-in;
   }
 
   @keyframes float {
@@ -80,16 +81,6 @@ Además agregamos propiedades y estilos globales para todo el HTML*/
 
     50% {
       transform: translateY(-10px);
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
     }
   }
 
