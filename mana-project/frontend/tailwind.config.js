@@ -6,9 +6,10 @@ export default {
     theme: {
         extend: {
             colors: {
-                'mana-brown': '#5D4037',
-                'mana-gold': '#FFD700',
-            }
+                'mana-brown': '#A9806A',
+                'mana-gold': '#ffffc5e8',
+                'mana-cream': '#FFFDD0',
+            },
         },
     },
     plugins: [],
