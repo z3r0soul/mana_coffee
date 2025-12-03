@@ -1,11 +1,11 @@
 // Información del restaurante
 export const RESTAURANT_INFO = {
     name: 'Mana',
-    tagline: 'Sazón Natural, Comida del Hogar',
+    tagline: 'Sazón Natural, Comida del Hogar, ',
     phone: '3150118386',
     whatsappNumber: '573150118386',
-    email: 'contacto@manarestaurante.com',
-    address: 'Bogotá, Colombia',
+    email: 'manacofee@outlook.com',
+    address: 'cra 9 calle 5 local 2 esquina frente al hospital , Pamplona, Colombia',
     openingDate: '29 de Enero de 2025',
 
     schedule: {
@@ -40,9 +40,9 @@ export const RESTAURANT_INFO = {
 // Redes sociales
 export const SOCIAL_MEDIA = {
     whatsapp: `https://wa.me/${RESTAURANT_INFO.whatsappNumber}`,
-    instagram: 'https://instagram.com/manarestaurante',
-    facebook: 'https://facebook.com/manarestaurante',
-    tiktok: 'https://tiktok.com/@manarestaurante'
+    instagram: 'https://www.instagram.com/mana_coffee_pam/',
+    facebook: 'https://www.facebook.com/profile.php?id=61572704497545',
+    tiktok: 'https://www.tiktok.com/@mana.coffee.pampl?lang=es-419'
 };
 
 // Categorías del menú
