@@ -64,6 +64,12 @@ function Home() {
                             Ver Menú
                         </Link>
                         <Link
+                            to="/LunchBuilder"
+                            className="bg-white text-mana-brown px-8 py-4 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95"
+                        >
+                            Arma tu almuerzo!
+                        </Link>
+                        <Link
                             to="/reservations"
                             className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-base md:text-lg hover:bg-white hover:text-mana-brown transition-all"
                         >

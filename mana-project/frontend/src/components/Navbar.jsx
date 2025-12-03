@@ -6,11 +6,11 @@ import ManaLogo from '../assets/LOGOFNUDE.jpeg';
 function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
-
+    {/*Arreglo para manejar los enlaces del menu segun el pathing propuesto*/ }
     const navLinks = [
         { name: 'Inicio', path: '/' },
         { name: 'Menú', path: '/menu' },
-        { name: 'Almuerzo del Día', path: '/lunch' },
+        { name: 'Almuerzo del Día', path: '/LunchBuilder' },
         { name: 'Reservas', path: '/reservations' },
         { name: 'Ubicaciones', path: '/locations' },
         { name: 'Nosotros', path: '/about' },
@@ -91,8 +91,8 @@ function Navbar() {
                             to={link.path}
                             onClick={() => setIsOpen(false)}
                             className={`block px-6 py-4 font-medium transition-all border-l-4 ${isActive(link.path)
-                                ? 'bg-mana-cream text-mana-brown border-mana-gold'
-                                : 'text-gray-700 border-transparent hover:bg-gray-50 hover:border-mana-brown'
+                                ? 'bg-mana-brown text-mana-cream border-mana-brown hover:border-black/70'
+                                : 'text-gray-700 border-transparent hover:bg-gray-50 hover:border-black/70'
                                 }`}
                         >
                             {link.name}
