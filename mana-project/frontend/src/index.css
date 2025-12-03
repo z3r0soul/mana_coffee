@@ -52,8 +52,9 @@ Además agregamos propiedades y estilos globales para todo el HTML*/
   Breakpoints: sm, md, lg, xl, 2xl
   hace que el espaciado aumente entre más grande sea la pantalla*/
   .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto px-4;
   }
+
 
   /*Al igual que antes, establecemos breakpoints para que el título aumente en tamaño*/
   .section-title {
