@@ -1,13 +1,19 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import cookieParser from "cookie-parser";
 import menuRoutes from "./routes/menu.js";
+import authRoutes from "./routes/auth.js";
 
 const app = express();
 const PORT = 4000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // URL del frontend
+  credentials: true, // Permitir cookies
+}));
+app.use(cookieParser()); // Para leer cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -16,7 +22,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Rutas
 app.use("/api/menu", menuRoutes);
-
+app.use("/api/auth", authRoutes);
 // Ruta de prueba
 app.get("/", (req, res) => {
   res.json({ mensaje: "API de Mana Coffee funcionando correctamente" });
