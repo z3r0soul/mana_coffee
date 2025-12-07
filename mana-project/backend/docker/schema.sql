@@ -8,3 +8,14 @@ CREATE TABLE menu (
   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   activo BOOLEAN DEFAULT TRUE
 );
+
+CREATE TABLE Cliente (
+    cliente_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Apellido VARCHAR(100) NOT NULL,
+    Telefono VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Direccion VARCHAR(100),
+    Contrasena VARCHAR(255) NOT NULL,
+    CONSTRAINT uk_cliente_email UNIQUE (Email)
+);
