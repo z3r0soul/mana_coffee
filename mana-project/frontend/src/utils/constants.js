@@ -1,7 +1,7 @@
 // Información del restaurante
 export const RESTAURANT_INFO = {
     name: 'Mana',
-    tagline: 'Sazón Natural, Comida del Hogar, ',
+    tagline: 'Sazón Natural, Comida del Hogar y grandes experiencias! ',
     phone: '3150118386',
     whatsappNumber: '573150118386',
     email: 'manacofee@outlook.com',
@@ -103,7 +103,7 @@ export const STATUS_LABELS = {
     completed: 'Completada'
 };
 
-// Datos de ejemplo para mostrar (temporal - luego vendrán del backend)
+// Datos de ejemplo para mostrar (temporal mientras se cuaadra la bd)
 export const MOCK_MENU_ITEMS = [
     {
         id: '1',

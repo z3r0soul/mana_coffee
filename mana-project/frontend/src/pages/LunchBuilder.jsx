@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Check, Plus, Minus, ShoppingCart, Clock, AlertCircle } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
+import imgTest from '../assets/FOTO3.jpeg';
 
 function LunchBuilder() {
+
     const dailyMenu = {
         date: new Date().toLocaleDateString('es-CO', {
             weekday: 'long',
@@ -11,7 +13,7 @@ function LunchBuilder() {
             day: 'numeric'
         }),
         basePrice: 14000,
-        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
+        imageUrl: imgTest, /*TESTEO DE PRECIOS*/
         mainDishes: [
             { id: 'main1', name: 'Pechuga a la Plancha', price: 0 },
             { id: 'main2', name: 'Carne Asada', price: 2000 },
@@ -141,25 +143,25 @@ function LunchBuilder() {
             : 'Sin jugo';
 
         const message = `
-🍽️ *PEDIDO DE ALMUERZO - MANA*
+        *PEDIDO DE ALMUERZO - MANA*
 
-📅 *Fecha:* ${dailyMenu.date}
+*Fecha:* ${dailyMenu.date}
 
-👤 *Cliente:*
-• Nombre: ${customerData.name}
-• Teléfono: ${customerData.phone}
+*Cliente:*
+- Nombre: ${customerData.name}
+- Teléfono: ${customerData.phone}
 
-🍴 *Mi Almuerzo:*
-• Plato Principal: ${mainDishName}
-• Acompañamientos: ${sideDishNames || 'Ninguno'}
-• Sopa: ${soupName}
-• Jugo: ${juiceName}
-• Arroz: ${order.includeRice ? 'Sí' : 'No'}
+*Mi Almuerzo:*
+- Plato Principal: ${mainDishName}
+- Acompañamientos: ${sideDishNames || 'Ninguno'}
+- Sopa: ${soupName}
+- Jugo: ${juiceName}
+- Arroz: ${order.includeRice ? 'Sí' : 'No'}
 ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
 
-💰 *Total: $${totalPrice.toLocaleString('es-CO')}*
+ -Total: $${totalPrice.toLocaleString('es-CO')}*
 
-⏰ Confirmaré 2 horas antes de la entrega.
+ Confirmaré 2 horas antes de la entrega.
     `.trim();
 
         const whatsappUrl = `${SOCIAL_MEDIA.whatsapp}?text=${encodeURIComponent(message)}`;
@@ -169,7 +171,7 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <div className="bg-gradient-to-r from-mana-brown to-mana-gold text-white py-12">
+            <div className="bg-mana-brown text-white py-12">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto text-center">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -204,7 +206,7 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                         Menú Ejecutivo del Día
                                     </h3>
                                     <p className="text-gray-600">
-                                        Precio base: <span className="font-bold text-mana-gold text-xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
+                                        Precio base: <span className="font-bold text-mana-brown text-xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
                                     </p>
                                 </div>
                             </div>
@@ -388,7 +390,7 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                     </label>
                                     <label className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-mana-brown transition-all">
                                         <div>
-                                            <span className="font-medium text-gray-800">¿Agregar icopor?</span>
+                                            <span className="font-medium text-gray-800">El icopor esta incluido en el domicilio</span>
                                             <p className="text-sm text-gray-500">+${RESTAURANT_INFO.prices.icopor.toLocaleString('es-CO')}</p>
                                         </div>
                                         <input
@@ -419,7 +421,7 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                             type="text"
                                             value={customerData.name}
                                             onChange={(e) => setCustomerData({ ...customerData, name: e.target.value })}
-                                            placeholder="Ej: Juan Pérez"
+                                            placeholder="Ej: Santiago"
                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mana-gold"
                                         />
                                     </div>
