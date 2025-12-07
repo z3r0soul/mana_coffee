@@ -45,7 +45,7 @@ function Home() {
                 <div className="relative z-20 container-custom h-full flex flex-col justify-center text-white">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 leading-tight">
                         Bienvenidos a<br />
-                        <span className="text-mana-gold">Mana</span>
+                        <span className="text-mana-gold">Mana Restobar</span>
                     </h1>
 
                     <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl text-white/95 font-light">
@@ -65,13 +65,13 @@ function Home() {
                         </Link>
                         <Link
                             to="/LunchBuilder"
-                            className="bg-white text-mana-brown px-8 py-4 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95"
+                            className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-base md:text-lg hover:bg-white hover:text-mana-brown transition-all"
                         >
-                            Arma tu almuerzo!
+                            Arma tu almuerzo
                         </Link>
                         <Link
                             to="/reservations"
-                            className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-base md:text-lg hover:bg-white hover:text-mana-brown transition-all"
+                            className="bg-white text-mana-brown px-8 py-4 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95"
                         >
                             Reservar Mesa
                         </Link>
@@ -115,6 +115,47 @@ function Home() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+            {/* Sobre Nosotros */}
+            <section className="py-20 bg-mana-cream/60">
+                <div className="container-custom flex flex-col lg:flex-row items-center gap-12">
+
+                    {/* Imagen */}
+                    <div className="w-full lg:w-1/2">
+                        <img
+                            src={imgAlmuerzo}
+                            alt="Sobre Mana"
+                            className="rounded-2xl shadow-xl object-cover w-full h-[380px]"
+                        />
+                    </div>
+
+                    {/* Texto */}
+                    <div className="w-full lg:w-1/2">
+                        <h2 className="text-3xl md:text-4xl font-bold text-mana-brown mb-6">
+                            Sobre Nosotros
+                        </h2>
+
+                        <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                            En <span className="font-semibold text-mana-brown">Mana</span> creemos en el poder de la comida honesta,
+                            preparada con ingredientes frescos y ese toque casero que nos ha acompañado desde siempre.
+                            Somos un espacio donde cada plato está pensado para brindar comodidad, sabor y momentos especiales.
+                        </p>
+
+                        <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                            Nuestro equipo trabaja con dedicación para ofrecer desayunos reconfortantes, almuerzos ejecutivos
+                            llenos de sazón y cenas que hacen sentir como en casa. Aquí no solo vienes a comer: vienes a disfrutar,
+                            compartir y vivir la verdadera experiencia Mana.
+                        </p>
+
+                        <Link
+                            to="/about"
+                            className="inline-block mt-4 bg-mana-brown text-white px-8 py-4 rounded-full font-semibold shadow-md hover:bg-mana-brown/90 transition-all"
+                        >
+                            Conócenos Más
+                        </Link>
+                    </div>
+
                 </div>
             </section>
 
@@ -234,7 +275,7 @@ function Home() {
             </section>
 
             {/* CTA */}
-            <section className="py-16 bg-mana-brown text-white text-center">
+            <section className="py-16 bg-mana-brown text-white text-center border-t border-gray-200">
                 <div className="container-custom">
 
                     <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
