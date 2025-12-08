@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import imgAlmuerzo from '../assets/FOTO1.jpeg';
 import imgCena from '../assets/FOTO12.jpeg';
 import imgMana from '../assets/bg-mana.png'
+import WhatsAppFloat from '../components/WhatsappFloat';
 import { Clock, Award, Heart, Phone, MapPin, Instagram, Facebook, MessageCircle, ChefHat, Utensils, Coffee } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 
@@ -160,10 +161,10 @@ function Home() {
             </section>
 
             {/* Contacto */}
-            <section className="py-12 md:py-15 border-t border-brown">
+            <section className="py-12 md:py-15 border-t border-brown-">
                 <div className="container-custom">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-brown mb-4">
+                        <h2 className="text-3xl md:text-4xl font-bold text-mana-brown mb-4">
                             Contactate con Nosotros
                         </h2>
                         <p className="text-gray-600 text-lg ">
@@ -172,51 +173,63 @@ function Home() {
                     </div>
 
                     <div className="flex flex-row justify-center gap-6 max-w-4xl mx-auto">
-
                         {/* Información */}
-                        <div className="bg-gradient-to-br from-mana-gold to-mana-gold w-full rounded-2xl p-8 text-center md:text-left shadow-lg">
-                            <h3 className="text-2xl font-bold text-mana-brown/90 mb-6">
+                        <div className="bg-gradient-to-br from-mana-gold to-mana-gold w-full rounded-2xl p-8 text-center md:text-left shadow-xl border border-white/20">
+
+                            <h3 className="text-2xl font-bold text-mana-brown mb-6">
                                 Información
                             </h3>
 
-                            <div className="space-y-5">
+                            <div className="space-y-6">
 
                                 {/* Teléfono */}
                                 <a
                                     href={SOCIAL_MEDIA.whatsapp}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center justify-center md:justify-start gap-3 text-gray-700 hover:text-mana-brown transition-colors group"
+                                    className="flex items-center justify-center md:justify-start gap-4 group"
                                 >
-                                    <div className="w-10 h-10 bg-white border-2 border-black/70 rounded-full flex items-center justify-center group-hover:bg-mana-brown transition-colors">
-                                        <Phone className="w-5 h-5 group-hover:text-white transition-colors" />
+                                    <div className="w-12 h-12 bg-white rounded-xl shadow-md flex items-center justify-center
+                transition-all duration-300 group-hover:bg-mana-brown group-hover:scale-110">
+                                        <Phone className="w-6 h-6 text-mana-brown group-hover:text-white transition-colors duration-300" />
                                     </div>
-                                    <span className="font-medium">{RESTAURANT_INFO.phone}</span>
+
+                                    <span className="font-semibold text-gray-800 group-hover:text-mana-brown transition-colors">
+                                        {RESTAURANT_INFO.phone}
+                                    </span>
                                 </a>
 
                                 {/* Horarios */}
-                                <div className="flex items-center justify-center md:justify-start gap-3 text-gray-700">
-                                    <div className="w-10 h-10 bg-white border-2 border-black/70 rounded-full flex items-center justify-center">
-                                        <Clock className="w-5 h-5 text-mana-black/70" />
+                                <div className="flex items-center justify-center md:justify-start gap-4">
+                                    <div className="w-12 h-12 bg-white rounded-xl shadow-md flex items-center justify-center">
+                                        <Clock className="w-6 h-6 text-mana-black/70" />
                                     </div>
+
                                     <div>
-                                        <p className="font-semibold">Lunes - Domingo</p>
-                                        <p className="text-sm text-gray-600">7:30 AM - 9:00 PM</p>
+                                        <p className="font-semibold text-gray-900">Lunes - Domingo</p>
+                                        <p className="text-sm text-gray-700">7:30 AM - 9:00 PM</p>
                                     </div>
                                 </div>
 
                                 {/* Ubicación */}
                                 <Link
                                     to="/locations"
-                                    className="flex items-center justify-center md:justify-start gap-3 text-gray-700 hover:text-mana-brown transition-colors group"
+                                    className="flex items-center justify-center md:justify-start gap-4 group"
                                 >
-                                    <div className="w-10 h-10 bg-white border-2 border-black/70 rounded-full flex items-center justify-center group-hover:bg-mana-brown transition-colors">
-                                        <MapPin className="w-5 h-5 group-hover:text-white transition-colors" />
+                                    <div className="w-12 h-12 bg-white rounded-xl shadow-md flex items-center justify-center
+                transition-all duration-300 group-hover:bg-mana-brown group-hover:scale-110">
+                                        <MapPin className="w-6 h-6 text-mana-brown group-hover:text-white transition-colors" />
                                     </div>
-                                    <span className="font-medium">Ver Ubicación</span>
+
+                                    <span className="font-semibold text-gray-800 group-hover:text-mana-brown transition-colors">
+                                        Ver Ubicación
+                                    </span>
                                 </Link>
+
                             </div>
                         </div>
+
+
 
                         {/* Redes */}
                         <div className="bg-gradient-to-br from-mana-brown to-mana-brown/60 rounded-2xl p-8 text-white text-center md:text-left shadow-lg">
@@ -275,40 +288,29 @@ function Home() {
             </section>
 
             {/* CTA */}
-            <section className="py-16 bg-mana-brown text-white text-center border-t border-gray-200">
+            <section className="py-12 px-16 bg-mana-brown text-mana-white text-left border-t border-gray-200">
                 <div className="container-custom">
 
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+                    <h2 className="text-2xl px-52 md:text-3xl lg:text-4xl font-bold mb-4 ">
                         ¿Listo para disfrutar de nuestra sazón natural?
                     </h2>
 
-                    <p className="mb-8 text-white/90 text-lg">
-                        Visítanos o haz tu pedido ahora
+                    <p className="text-white/90 text-lg text-center">
+                        Visítanos o haz tu pedido ahora!
                     </p>
-
-                    <div className="flex flex-wrap gap-4 justify-center">
-
-                        <a
-                            href={SOCIAL_MEDIA.whatsapp}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 bg-green-500 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-600 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-black/30"
-                        >
-                            <MessageCircle className="w-5 h-5" />
-                            Contactar por WhatsApp
-                        </a>
-
-                        <Link
-                            to="/menu"
-                            className="inline-block bg-white text-mana-brown px-8 py-4 rounded-full font-semibold hover:bg-mana-cream transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
-                        >
-                            Explorar Menú
-                        </Link>
-
-                    </div>
 
                 </div>
             </section>
+            <WhatsAppFloat />
+            <footer className="bg-mana-brown text-center text-white/80 py-6 border-t border-white/20">
+                <p className="text-sm">
+                    &copy; {new Date().getFullYear()}
+                    <span className="font-semibold text-mana-gold"> Mana Restobar</span>. Todos los derechos reservados.
+                </p>
+                <p className="text-xs mt-1">
+                    Hecho con ❤️ en <span className='text-mana-gold font-semibold italic'>Pamplona</span>, Colombia
+                </p>
+            </footer>
         </div>
     );
 }
