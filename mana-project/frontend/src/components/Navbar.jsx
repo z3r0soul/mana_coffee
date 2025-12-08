@@ -14,8 +14,7 @@ function Navbar() {
         { name: 'Almuerzo del Día', path: '/LunchBuilder' },
         { name: 'Reservas', path: '/reservations' },
         { name: 'Ubicaciones', path: '/locations' },
-        { name: 'Nosotros', path: '/Us' },
-        { name: 'Contacto', path: '/Contact' }
+        { name: 'Nosotros', path: '/Us' }
     ];
 
     const isActive = (path) => location.pathname === path;

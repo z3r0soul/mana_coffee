@@ -150,7 +150,7 @@ function Home() {
                         </p>
 
                         <Link
-                            to="/about"
+                            to="/Us"
                             className="inline-block mt-4 bg-mana-brown text-white px-8 py-4 rounded-full font-semibold shadow-md hover:bg-mana-brown/90 transition-all"
                         >
                             Conócenos Más
