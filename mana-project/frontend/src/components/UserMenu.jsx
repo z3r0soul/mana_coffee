@@ -16,7 +16,7 @@ function UserMenu() {
     useEffect(() => {
         loadUser();
     }, [location.pathname]);
-
+    
     const loadUser = () => {
         // Intentamos obtener las credenciales desde el endpoint protegido.
         // El backend aplica `verificarToken` y responderá 401 si no hay sesión válida.
@@ -83,9 +83,9 @@ function UserMenu() {
 
     return (
         <div className="w-full flex justify-end">
-            {/* El div principal debe ser relative para que el botón funcione,
-            pero no afectará el menú porque este será 'fixed' */}
-            <div className="relative">
+            {/* El div principal debe ser relative para que el botón y el menú
+            se consideren dentro del mismo contenedor al detectar clics fuera */}
+            <div className="relative" ref={menuRef}>
                 {/* Botón del Avatar */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -96,7 +96,6 @@ function UserMenu() {
                     // Ajustaremos el useRef para que solo el botón lo active.
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-mana-cream/10 transition-colors"
                     aria-label="Menú de usuario"
-                    ref={menuRef} // Colocamos el ref aquí para usarlo con handleClickOutside
                 >
                     <div className="w-10 h-10 bg-[#F5F5DC]/75 rounded-full flex items-center justify-center">
                         {user ? (

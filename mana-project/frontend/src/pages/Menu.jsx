@@ -11,9 +11,8 @@ function Menu() {
     nombre: "",
     descripcion: "",
     precio: "",
+    tipo: "CAFETERIA",
   });
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
 
   // Cargar items del menú
   useEffect(() => {
@@ -38,36 +37,25 @@ function Menu() {
     });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
+  const formatPrice = (price) => {
+    return parseFloat(price).toLocaleString('es-ES', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append("nombre", formData.nombre);
-    data.append("descripcion", formData.descripcion);
-    data.append("precio", formData.precio);
-    if (selectedImage) {
-      data.append("imagen", selectedImage);
-    }
-
     try {
-      await axios.post(API_URL, data, {
+      await axios.post(API_URL, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
       
       // Limpiar formulario
-      setFormData({ nombre: "", descripcion: "", precio: "" });
-      setSelectedImage(null);
-      setImagePreview(null);
+      setFormData({ nombre: "", descripcion: "", precio: "", tipo: "CAFETERIA" });
       setShowForm(false);
       
       // Recargar menú
@@ -166,21 +154,20 @@ function Menu() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Imagen del Producto
+                  Tipo de Producto
                 </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                />
-                {imagePreview && (
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="mt-4 w-full h-48 object-cover rounded-lg"
-                  />
-                )}
+                <select
+                  name="tipo"
+                  value={formData.tipo}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
+                >
+                  <option value="CAFETERIA">Cafetería</option>
+                  <option value="DESAYUNO">Desayuno</option>
+                  <option value="ALMUERZO">Almuerzo</option>
+                  <option value="CENA">Cena</option>
+                </select>
               </div>
 
               <button
@@ -201,47 +188,61 @@ function Menu() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {menuItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition"
-              >
-                {item.imagen ? (
-                  <img
-                    src={`http://localhost:4000${item.imagen}`}
-                    alt={item.nombre}
-                    className="w-full h-64 object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">Sin imagen</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {menuItems.map((item) => {
+              const tipoColors = {
+                CAFETERIA: "bg-amber-100 text-amber-800",
+                DESAYUNO: "bg-orange-100 text-orange-800",
+                ALMUERZO: "bg-green-100 text-green-800",
+                CENA: "bg-purple-100 text-purple-800"
+              };
+              
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-6 flex flex-col"
+                >
+                  {/* Badge del tipo */}
+                  <div className="mb-3">
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${tipoColors[item.tipo]}`}>
+                      {item.tipo}
+                    </span>
                   </div>
-                )}
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+
+                  {/* Nombre del producto */}
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {item.nombre}
                   </h3>
+
+                  {/* Descripción */}
                   {item.descripcion && (
-                    <p className="text-gray-600 mb-4">{item.descripcion}</p>
+                    <p className="text-gray-600 text-sm mb-4 flex-grow">
+                      {item.descripcion}
+                    </p>
                   )}
-                  <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-amber-600">
-                      ${parseFloat(item.precio).toFixed(2)}
+
+                  {/* Precio formateado */}
+                  <div className="mb-4">
+                    <span className="text-3xl font-bold text-amber-600">
+                      ${formatPrice(item.precio)}
                     </span>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm"
-                    >
-                      Eliminar
-                    </button>
                   </div>
-                  <div className="mt-2 text-xs text-gray-400">
-                    Agregado: {new Date(item.fecha).toLocaleDateString()}
+
+                  {/* Botón eliminar */}
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-semibold"
+                  >
+                    Eliminar
+                  </button>
+
+                  {/* Fecha */}
+                  <div className="mt-2 text-xs text-gray-400 text-center">
+                    {new Date(item.fecha).toLocaleDateString('es-ES')}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

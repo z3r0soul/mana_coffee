@@ -6,8 +6,9 @@ import path from "path";
 export const getMenuItems = async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM menu ORDER BY fecha DESC"
+      "SELECT id, nombre, descripcion, precio, tipo, fecha FROM menu ORDER BY fecha DESC"
     );
+    
     res.json(rows);
   } catch (error) {
     console.error("Error al obtener menú:", error);
@@ -19,7 +20,10 @@ export const getMenuItems = async (req, res) => {
 export const getMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await db.query("SELECT * FROM menu WHERE id = ?", [id]);
+    const [rows] = await db.query(
+      "SELECT id, nombre, descripcion, precio, tipo, fecha FROM menu WHERE id = ?",
+      [id]
+    );
     
     if (rows.length === 0) {
       return res.status(404).json({ error: "Item no encontrado" });
@@ -32,19 +36,22 @@ export const getMenuItem = async (req, res) => {
   }
 };
 
-// Crear un nuevo item del menú con imagen
+// Crear un nuevo item del menú
 export const createMenuItem = async (req, res) => {
   try {
     const { nombre, descripcion, precio, tipo } = req.body;
-    const imagen = req.file ? `/uploads/${req.file.filename}` : null;
 
     if (!nombre || !precio) {
       return res.status(400).json({ error: "Nombre y precio son requeridos" });
     }
 
+    // Validar tipo - debe ser uno de los valores permitidos
+    const tiposPermitidos = ['DESAYUNO', 'ALMUERZO', 'CENA', 'CAFETERIA'];
+    const tipoFinal = tiposPermitidos.includes(tipo) ? tipo : 'CAFETERIA';
+
     const [result] = await db.query(
-      "INSERT INTO menu (nombre, descripcion, precio, imagen, tipo) VALUES (?, ?, ?, ?, ?)",
-      [nombre, descripcion, precio, imagen, tipo]
+      "INSERT INTO menu (nombre, descripcion, precio, tipo) VALUES (?, ?, ?, ?)",
+      [nombre, descripcion, precio, tipoFinal]
     );
 
     res.status(201).json({
@@ -52,8 +59,7 @@ export const createMenuItem = async (req, res) => {
       nombre,
       descripcion,
       precio,
-      imagen,
-      tipo,
+      tipo: tipoFinal,
       mensaje: "Item creado exitosamente",
     });
   } catch (error) {
@@ -66,8 +72,7 @@ export const createMenuItem = async (req, res) => {
 export const updateMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, precio, tipo} = req.body;
-    const nuevaImagen = req.file ? `/uploads/${req.file.filename}` : null;
+    const { nombre, descripcion, precio, tipo } = req.body;
 
     // Verificar si el item existe
     const [itemActual] = await db.query("SELECT * FROM menu WHERE id = ?", [id]);
@@ -75,19 +80,13 @@ export const updateMenuItem = async (req, res) => {
       return res.status(404).json({ error: "Item no encontrado" });
     }
 
-    // Si hay una nueva imagen, eliminar la anterior
-    if (nuevaImagen && itemActual[0].imagen) {
-      const imagenAnterior = path.join(process.cwd(), "uploads", path.basename(itemActual[0].imagen));
-      if (fs.existsSync(imagenAnterior)) {
-        fs.unlinkSync(imagenAnterior);
-      }
-    }
-
-    const imagen = nuevaImagen || itemActual[0].imagen;
+    // Validar tipo - debe ser uno de los valores permitidos
+    const tiposPermitidos = ['DESAYUNO', 'ALMUERZO', 'CENA', 'CAFETERIA'];
+    const tipoFinal = tiposPermitidos.includes(tipo) ? tipo : itemActual[0].tipo || 'CAFETERIA';
 
     await db.query(
-      "UPDATE menu SET nombre = ?, descripcion = ?, precio = ?, imagen = ?, tipo = ? WHERE id = ?",
-      [nombre, descripcion, precio, imagen, tipo, id]
+      "UPDATE menu SET nombre = ?, descripcion = ?, precio = ?, tipo = ? WHERE id = ?",
+      [nombre, descripcion, precio, tipoFinal, id]
     );
 
     res.json({
@@ -95,8 +94,7 @@ export const updateMenuItem = async (req, res) => {
       nombre,
       descripcion,
       precio,
-      imagen,
-      tipo,
+      tipo: tipoFinal,
       mensaje: "Item actualizado exitosamente",
     });
   } catch (error) {
@@ -125,7 +123,7 @@ export const deleteMenuItem = async (req, res) => {
   }
 };
 
-// Eliminar permanentemente (con imagen)
+// Eliminar permanentemente
 export const hardDeleteMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -133,14 +131,6 @@ export const hardDeleteMenuItem = async (req, res) => {
     const [rows] = await db.query("SELECT * FROM menu WHERE id = ?", [id]);
     if (rows.length === 0) {
       return res.status(404).json({ error: "Item no encontrado" });
-    }
-
-    // Eliminar imagen física si existe
-    if (rows[0].imagen) {
-      const imagenPath = path.join(process.cwd(), "uploads", path.basename(rows[0].imagen));
-      if (fs.existsSync(imagenPath)) {
-        fs.unlinkSync(imagenPath);
-      }
     }
 
     await db.query("DELETE FROM menu WHERE id = ?", [id]);

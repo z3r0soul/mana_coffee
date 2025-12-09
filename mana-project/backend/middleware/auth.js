@@ -1,12 +1,8 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import db from "../config/db.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const password = process.env.ADMIN_HASH;
-const email = process.env.ADMIN_EMAIL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const verificarTokenHTML = (req, res, next) => {
