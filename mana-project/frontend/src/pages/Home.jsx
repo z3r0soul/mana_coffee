@@ -287,18 +287,29 @@ function Home() {
                 </div>
             </section>
 
-            {/* CTA */}
-            <section className="py-12 px-16 bg-mana-brown text-mana-white text-left border-t border-gray-200">
+            {/* CTA Final */}
+            <section className="py-16 bg-mana-brown text-white text-center">
                 <div className="container-custom">
-
-                    <h2 className="text-2xl px-52 md:text-3xl lg:text-4xl font-bold mb-4 ">
-                        ¿Listo para disfrutar de nuestra sazón natural?
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                        ¿Listo para Visitarnos?
                     </h2>
 
-                    <p className="text-white/90 text-lg text-center">
-                        Visítanos o haz tu pedido ahora!
+                    <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+                        Te esperamos para ofrecerte la mejor experiencia gastronómica.
                     </p>
 
+                    <div className="flex flex-wrap gap-4 justify-center">
+                        {/* ENLACE CORREGIDO */}
+                        <a
+                            href={SOCIAL_MEDIA.whatsapp}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-green-500 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-600 transition-all shadow-lg active:scale-95"
+                        >
+                            <Phone className="w-5 h-5" />
+                            Llamar Ahora
+                        </a>
+                    </div>
                 </div>
             </section>
             <WhatsAppFloat />
