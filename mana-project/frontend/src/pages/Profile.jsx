@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const API_URL = "http://localhost:4000/api/auth/profile";
+const LOGOUT_API_URL = "http://localhost:4000/api/auth/logout";
 
 function Profile() {
   const navigate = useNavigate();
@@ -34,14 +35,20 @@ function Profile() {
     }
   };
 
-  const handleLogout = () => {
-    // Eliminar datos del localStorage
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+  const handleLogout = async (e) => {
     
-    // Redirigir a login
-    alert("Sesión cerrada");
-    navigate("/login");
+    e.preventDefault();
+    try {
+      await axios.post(LOGOUT_API_URL, {}, {
+        withCredentials: true, // Incluir cookies
+      });
+      alert("Sesión cerrada");
+      navigate("/");
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+ 
+    
   };
 
   if (loading) {

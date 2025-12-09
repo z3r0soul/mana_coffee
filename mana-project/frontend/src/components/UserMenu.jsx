@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User, LogOut, UserCircle } from 'lucide-react';
+const API_URL = "http://localhost:4000/api/auth/logout";
 
 function UserMenu() {
     const [isOpen, setIsOpen] = useState(false);
@@ -46,12 +47,20 @@ function UserMenu() {
         };
     }, [isOpen]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        setUser(null);
-        setIsOpen(false);
-        navigate('/');
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        setError("");
+        try {
+            await fetch(API_URL, {
+                method: "POST",
+                credentials: "include", // Incluir cookies
+            });
+            alert("Sesión cerrada");
+            navigate('/');
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+        
     };
 
     return (
