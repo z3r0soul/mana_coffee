@@ -166,6 +166,37 @@ export const logoutUser = (req, res) => {
   res.json({ message: "Logout exitoso" });
 };
 
+// Verificar si el usuario es admin
+export const checkAdmin = async (req, res) => {
+  try {
+    const userId = req.usuario.id;
+    const userEmail = req.usuario.email;
+    
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_HASH;
+
+    if (!adminEmail || !adminEmail.includes(userEmail)) {
+      return res.json({ isAdmin: false });
+    }
+
+    const [usuarios] = await db.query(
+      "SELECT Contrasena FROM Cliente WHERE cliente_id = ?",
+      [userId]
+    );
+
+    if (usuarios.length === 0) {
+      return res.json({ isAdmin: false });
+    }
+
+    const match = await bcrypt.compare(adminPassword, usuarios[0].Contrasena);
+    
+    res.json({ isAdmin: match });
+  } catch (err) {
+    console.error("Error al verificar admin:", err);
+    res.status(500).json({ error: "Error al verificar permisos" });
+  }
+};
+
 
 
 

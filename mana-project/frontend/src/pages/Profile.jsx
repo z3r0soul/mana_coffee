@@ -4,6 +4,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:4000/api/auth/profile";
 const LOGOUT_API_URL = "http://localhost:4000/api/auth/logout";
+const CHECK_ADMIN_URL = "http://localhost:4000/api/auth/check-admin";
 
 function Profile() {
   const navigate = useNavigate();
@@ -21,6 +22,18 @@ function Profile() {
         withCredentials: true, // Envía la cookie con el token
       });
       setUser(response.data);
+      
+      // Verificar si es admin
+      const adminCheck = await axios.get(CHECK_ADMIN_URL, {
+        withCredentials: true,
+      });
+      
+      if (adminCheck.data.isAdmin) {
+        // Si es admin, redirigir al panel de administración
+        navigate("/admin");
+        return;
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error("Error al obtener perfil:", error);

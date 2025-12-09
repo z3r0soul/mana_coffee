@@ -10,7 +10,7 @@ const PORT = 4000;
 
 // Middlewares
 app.use(cors({
-  origin: "http://localhost:5173", // URL del frontend
+  origin: "http://localhost:5174", // URL del frontend
   credentials: true, // Permitir cookies
 }));
 app.use(cookieParser()); // Para leer cookies
