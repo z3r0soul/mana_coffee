@@ -6,7 +6,7 @@ import path from "path";
 export const getMenuItems = async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM menu WHERE activo = TRUE ORDER BY fecha DESC"
+      "SELECT * FROM menu ORDER BY fecha DESC"
     );
     res.json(rows);
   } catch (error) {
@@ -35,7 +35,7 @@ export const getMenuItem = async (req, res) => {
 // Crear un nuevo item del menú con imagen
 export const createMenuItem = async (req, res) => {
   try {
-    const { nombre, descripcion, precio } = req.body;
+    const { nombre, descripcion, precio, tipo } = req.body;
     const imagen = req.file ? `/uploads/${req.file.filename}` : null;
 
     if (!nombre || !precio) {
@@ -43,8 +43,8 @@ export const createMenuItem = async (req, res) => {
     }
 
     const [result] = await db.query(
-      "INSERT INTO menu (nombre, descripcion, precio, imagen) VALUES (?, ?, ?, ?)",
-      [nombre, descripcion, precio, imagen]
+      "INSERT INTO menu (nombre, descripcion, precio, imagen, tipo) VALUES (?, ?, ?, ?, ?)",
+      [nombre, descripcion, precio, imagen, tipo]
     );
 
     res.status(201).json({
@@ -53,6 +53,7 @@ export const createMenuItem = async (req, res) => {
       descripcion,
       precio,
       imagen,
+      tipo,
       mensaje: "Item creado exitosamente",
     });
   } catch (error) {
@@ -65,7 +66,7 @@ export const createMenuItem = async (req, res) => {
 export const updateMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, precio } = req.body;
+    const { nombre, descripcion, precio, tipo} = req.body;
     const nuevaImagen = req.file ? `/uploads/${req.file.filename}` : null;
 
     // Verificar si el item existe
@@ -85,8 +86,8 @@ export const updateMenuItem = async (req, res) => {
     const imagen = nuevaImagen || itemActual[0].imagen;
 
     await db.query(
-      "UPDATE menu SET nombre = ?, descripcion = ?, precio = ?, imagen = ? WHERE id = ?",
-      [nombre, descripcion, precio, imagen, id]
+      "UPDATE menu SET nombre = ?, descripcion = ?, precio = ?, imagen = ?, tipo = ? WHERE id = ?",
+      [nombre, descripcion, precio, imagen, tipo, id]
     );
 
     res.json({
@@ -95,6 +96,7 @@ export const updateMenuItem = async (req, res) => {
       descripcion,
       precio,
       imagen,
+      tipo,
       mensaje: "Item actualizado exitosamente",
     });
   } catch (error) {

@@ -2,32 +2,46 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User, LogOut, UserCircle } from 'lucide-react';
 const API_URL = "http://localhost:4000/api/auth/logout";
+const PROFILE_API = "http://localhost:4000/api/auth/profile"; // endpoint protegido que usa verificarToken en backend
 
 function UserMenu() {
     const [isOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [error, setError] = useState("");
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Cargar usuario del localStorage
+    // Cargar usuario usando endpoint protegido (usa verificarToken en backend)
     useEffect(() => {
         loadUser();
     }, [location.pathname]);
 
     const loadUser = () => {
-        try {
-            const userData = localStorage.getItem('user');
-            if (userData) {
-                setUser(JSON.parse(userData));
-            } else {
+        // Intentamos obtener las credenciales desde el endpoint protegido.
+        // El backend aplica `verificarToken` y responderá 401 si no hay sesión válida.
+        (async () => {
+            try {
+                const resp = await fetch(PROFILE_API, {
+                    method: 'GET',
+                    credentials: 'include', // incluir cookies con token
+                });
+
+                if (resp.ok) {
+                    const data = await resp.json();
+                    setUser(data);
+                    try { localStorage.setItem('user', JSON.stringify(data)); } catch(e) {}
+                } else {
+                    // No autenticado o error -> limpiar
+                    setUser(null);
+                    localStorage.removeItem('user');
+                }
+            } catch (err) {
+                console.error('Error al obtener perfil:', err);
                 setUser(null);
+                localStorage.removeItem('user');
             }
-        } catch (error) {
-            console.error('Error al cargar usuario:', error);
-            localStorage.removeItem('user');
-            setUser(null);
-        }
+        })();
     };
 
     // Cerrar menú al hacer click fuera
@@ -56,6 +70,9 @@ function UserMenu() {
                 method: "POST",
                 credentials: "include", // Incluir cookies
             });
+            // limpiar estado local
+            setUser(null);
+            localStorage.removeItem('user');
             alert("Sesión cerrada");
             navigate('/');
         } catch (error) {

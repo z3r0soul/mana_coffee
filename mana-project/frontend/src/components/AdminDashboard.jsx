@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Users, Calendar, Coffee, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
+import Menu from '../pages/Menu';
 const LOGOUT_API_URL = "http://localhost:4000/api/auth/logout";
 
 function AdminDashboard() {
@@ -213,15 +213,7 @@ function AdminDashboard() {
 
         {activeTab === 'menu' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Gestión del Menú
-            </h2>
-            <p className="text-gray-600">
-              Aquí podrás agregar, editar y eliminar items del menú.
-            </p>
-            <div className="mt-4 text-sm text-amber-600">
-              Funcionalidad en desarrollo - conectar con API de menú
-            </div>
+            <Menu />
           </div>
         )}
       </div>

@@ -24,7 +24,7 @@ function Admin() {
         setIsAdmin(true);
       } else {
         // No es admin, redirigir a home
-        alert("No tienes permisos para acceder a esta página");
+        alert("");
         navigate("/");
       }
     } catch (error) {
@@ -46,7 +46,7 @@ function Admin() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
-        <div className="text-2xl text-amber-700">Verificando permisos...</div>
+        <div className="text-2xl text-amber-700">Cargando</div>
       </div>
     );
   }
