@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import Us from './pages/Us';
+import Locations from './pages/Locations';
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/Us" element={<Us />} />
+        <Route path="/locations" element={<Locations />} />
       </Routes>
     </BrowserRouter>
   );
