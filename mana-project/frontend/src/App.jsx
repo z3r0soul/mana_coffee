@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Us from './pages/Us';
+import Locations from './pages/Locations';
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/Us" element={<Us />} />
+        <Route path="/locations" element={<Locations />} />
       </Routes>
     </BrowserRouter>
   );

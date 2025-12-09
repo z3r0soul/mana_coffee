@@ -22,7 +22,7 @@ function Navbar() {
     return (
         <>
             {/* Navbar */}
-            <nav className="bg-mana-brown/80 shadow-md sticky top-0 z-40">
+            <nav className="bg-mana-brown/95 shadow-md sticky top-0 z-40 py-3">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex items-center justify-between h-20">
                         {/* Lado Izquierdo */}
@@ -30,7 +30,7 @@ function Navbar() {
                             {/* Menú */}
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
-                                className="text-mana-white p-3 hover:bg-mana-cream/30 rounded-lg transition-colors mr-4"
+                                className="text-mana-white p-3 hover:bg-mana-cream/10 rounded-lg transition-colors mr-4"
                                 aria-label="Toggle menu"
                             >
                                 {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -44,7 +44,7 @@ function Navbar() {
                                     className="w-14 h-14 object-contain bg-white rounded-full"
                                 />
                                 <div>
-                                    <h1 className="text-xl font-bold text-mana-white ">Mana Restobar</h1>
+                                    <h1 className="text-xl font-bold text-[#F5F5DC] "><span className="italic font-bold text-mana-gold">Mana</span> Restobar</h1>
 
                                 </div>
                             </Link>
@@ -85,7 +85,7 @@ function Navbar() {
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="text-white px-5 hover:bg-white rounded-lg transition-colors"
+                            className="text-white px-2 py-2 hover:bg-mana-cream/10 rounded-lg transition-colors"
                             aria-label="Cerrar menú"
                         >
                             <X size={24} />
@@ -104,7 +104,7 @@ function Navbar() {
                             to={link.path}
                             onClick={() => setIsOpen(false)}
                             className={`block px-6 py-4 font-medium transition-all border-l-4 ${isActive(link.path)
-                                ? 'bg-mana-cream text-mana-brown border-mana-gold'
+                                ? 'bg-mana-cream text-mana-brown border-black/75'
                                 : 'text-gray-700 border-transparent hover:bg-gray-50 hover:border-mana-brown'
                                 }`}
                         >
