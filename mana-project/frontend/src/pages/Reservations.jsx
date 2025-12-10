@@ -61,10 +61,9 @@ function Reservations() {
 
   const handlePhoneChange = (e) => {
     const value = e.target.value;
-    // Solo permitir números, espacios y algunos caracteres
     const cleaned = value.replace(/[^0-9\s\-+()]/g, '');
     setTelefono(cleaned);
-    
+
     if (cleaned && !validatePhone(cleaned)) {
       setErrors(prev => ({ ...prev, telefono: 'El número debe tener exactamente 10 dígitos' }));
     } else {
@@ -75,7 +74,7 @@ function Reservations() {
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    
+
     if (value && !validateEmail(value)) {
       setErrors(prev => ({ ...prev, email: 'Ingresa un correo electrónico válido' }));
     } else {
@@ -128,36 +127,37 @@ function Reservations() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-12 px-4">
+      // AJUSTE COLOR Y PADDING
+      <div className="min-h-screen bg-[#FDFBF7] pt-24 pb-12 px-4">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-10 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="text-green-600" size={40} />
+          <div className="bg-white rounded-3xl shadow-xl p-10 text-center border border-[#E8E4D9]">
+            <div className="w-20 h-20 bg-[#F0EBE0] rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="text-[#8B7355]" size={40} />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Reserva Confirmada</h1>
-            <p className="text-gray-600 mb-8">
-              Gracias <span className="font-semibold text-amber-600">{nombre}</span>, tu reserva ha sido registrada exitosamente.
+            <h1 className="text-3xl font-bold text-[#4A4036] mb-4">Reserva Confirmada</h1>
+            <p className="text-[#6B5D4D] mb-8">
+              Gracias <span className="font-semibold text-[#8B7355]">{nombre}</span>, tu reserva ha sido registrada exitosamente.
               Te contactaremos por WhatsApp para coordinar los detalles.
             </p>
-            
-            <div className="bg-gray-50 rounded-2xl p-6 mb-8 text-left space-y-3">
+
+            <div className="bg-[#FAF9F6] rounded-2xl p-6 mb-8 text-left space-y-3 border border-[#E8E4D9]">
               <div className="flex items-center gap-3">
-                <CalendarDays className="text-amber-600" size={20} />
-                <span className="text-gray-700">{new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                <CalendarDays className="text-[#8B7355]" size={20} />
+                <span className="text-[#4A4036]">{new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Clock className="text-amber-600" size={20} />
-                <span className="text-gray-700">{formatHora(hora)}</span>
+                <Clock className="text-[#8B7355]" size={20} />
+                <span className="text-[#4A4036]">{formatHora(hora)}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Users className="text-amber-600" size={20} />
-                <span className="text-gray-700">{personas} {personas === 1 ? 'persona' : 'personas'}</span>
+                <Users className="text-[#8B7355]" size={20} />
+                <span className="text-[#4A4036]">{personas} {personas === 1 ? 'persona' : 'personas'}</span>
               </div>
             </div>
 
             <button
               onClick={resetForm}
-              className="w-full bg-amber-600 text-white py-4 rounded-xl hover:bg-amber-700 transition font-semibold"
+              className="w-full bg-[#8B7355] text-white py-4 rounded-xl hover:bg-[#6F5B43] transition font-semibold shadow-md"
             >
               Hacer otra reserva
             </button>
@@ -168,36 +168,34 @@ function Reservations() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-12 px-4">
+    // AJUSTE COLOR Y PADDING (pt-24 para compensar navbar)
+    <div className="min-h-screen bg-[#FDFBF7] pt-24 pb-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-            Reserva tu <span className="text-amber-600">Mesa</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#4A4036] mb-3">
+            Reserva tu <span className="text-[#8B7355]">Mesa</span>
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-[#6B5D4D] text-lg">
             Te contactaremos por WhatsApp para coordinar el menú
           </p>
         </div>
 
-        {/* Progress Steps */}
+        {/* Progress Steps (Tonos tierra) */}
         <div className="flex items-center justify-center mb-10">
           <div className="flex items-center gap-2">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-              step >= 1 ? 'bg-amber-600 text-white' : 'bg-gray-200 text-gray-500'
-            }`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 1 ? 'bg-[#8B7355] text-white' : 'bg-[#E8E4D9] text-[#9A8C7D]'
+              }`}>
               1
             </div>
-            <div className={`w-16 h-1 rounded transition-all ${step >= 2 ? 'bg-amber-600' : 'bg-gray-200'}`}></div>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-              step >= 2 ? 'bg-amber-600 text-white' : 'bg-gray-200 text-gray-500'
-            }`}>
+            <div className={`w-16 h-1 rounded transition-all ${step >= 2 ? 'bg-[#8B7355]' : 'bg-[#E8E4D9]'}`}></div>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 2 ? 'bg-[#8B7355] text-white' : 'bg-[#E8E4D9] text-[#9A8C7D]'
+              }`}>
               2
             </div>
-            <div className={`w-16 h-1 rounded transition-all ${step >= 3 ? 'bg-amber-600' : 'bg-gray-200'}`}></div>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-              step >= 3 ? 'bg-amber-600 text-white' : 'bg-gray-200 text-gray-500'
-            }`}>
+            <div className={`w-16 h-1 rounded transition-all ${step >= 3 ? 'bg-[#8B7355]' : 'bg-[#E8E4D9]'}`}></div>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 3 ? 'bg-[#8B7355] text-white' : 'bg-[#E8E4D9] text-[#9A8C7D]'
+              }`}>
               3
             </div>
           </div>
@@ -206,43 +204,43 @@ function Reservations() {
         <form onSubmit={handleSubmit}>
           {/* Step 1: Datos de Contacto */}
           <div className={`transition-all duration-300 ${step === 1 ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-3xl shadow-xl p-8">
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#E8E4D9]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                  <User className="text-amber-600" size={24} />
+                <div className="w-12 h-12 bg-[#F0EBE0] rounded-xl flex items-center justify-center">
+                  <User className="text-[#8B7355]" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Tus Datos</h2>
-                  <p className="text-gray-500 text-sm">Ingresa tu información de contacto</p>
+                  <h2 className="text-2xl font-bold text-[#4A4036]">Tus Datos</h2>
+                  <p className="text-[#6B5D4D] text-sm">Ingresa tu información de contacto</p>
                 </div>
               </div>
 
               <div className="space-y-5">
+                {/* Inputs con colores tierra suaves */}
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nombre Completo</label>
+                  <label className="block text-sm font-medium text-[#4A4036] mb-2">Nombre Completo</label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9A8C7D]" size={20} />
                     <input
                       type="text"
                       value={nombre}
                       onChange={(e) => setNombre(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
+                      className="w-full pl-12 pr-4 py-4 border-2 border-[#E8E4D9] rounded-xl focus:ring-2 focus:ring-[#8B7355] focus:border-[#8B7355] transition-all bg-[#FAF9F6]"
                       placeholder="Juan Pérez"
                     />
                   </div>
                 </div>
 
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">WhatsApp</label>
+                  <label className="block text-sm font-medium text-[#4A4036] mb-2">WhatsApp</label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9A8C7D]" size={20} />
                     <input
                       type="tel"
                       value={telefono}
                       onChange={handlePhoneChange}
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all ${
-                        errors.telefono ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-amber-500'
-                      }`}
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-[#8B7355] transition-all bg-[#FAF9F6] ${errors.telefono ? 'border-red-300 focus:border-red-400' : 'border-[#E8E4D9] focus:border-[#8B7355]'
+                        }`}
                       placeholder="300 123 4567"
                       maxLength={15}
                     />
@@ -253,16 +251,15 @@ function Reservations() {
                 </div>
 
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
+                  <label className="block text-sm font-medium text-[#4A4036] mb-2">Correo Electrónico</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9A8C7D]" size={20} />
                     <input
                       type="email"
                       value={email}
                       onChange={handleEmailChange}
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all ${
-                        errors.email ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-amber-500'
-                      }`}
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-[#8B7355] transition-all bg-[#FAF9F6] ${errors.email ? 'border-red-300 focus:border-red-400' : 'border-[#E8E4D9] focus:border-[#8B7355]'
+                        }`}
                       placeholder="correo@ejemplo.com"
                     />
                   </div>
@@ -276,7 +273,7 @@ function Reservations() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={!canProceedStep1}
-                className="w-full mt-8 bg-amber-600 text-white py-4 rounded-xl hover:bg-amber-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full mt-8 bg-[#8B7355] text-white py-4 rounded-xl hover:bg-[#6F5B43] transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
               >
                 Continuar
               </button>
@@ -285,31 +282,31 @@ function Reservations() {
 
           {/* Step 2: Fecha y Hora */}
           <div className={`transition-all duration-300 ${step === 2 ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-3xl shadow-xl p-8">
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#E8E4D9]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                  <Calendar className="text-amber-600" size={24} />
+                <div className="w-12 h-12 bg-[#F0EBE0] rounded-xl flex items-center justify-center">
+                  <Calendar className="text-[#8B7355]" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Fecha y Hora</h2>
-                  <p className="text-gray-500 text-sm">Elige cuándo quieres visitarnos</p>
+                  <h2 className="text-2xl font-bold text-[#4A4036]">Fecha y Hora</h2>
+                  <p className="text-[#6B5D4D] text-sm">Elige cuándo quieres visitarnos</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">Selecciona la fecha</label>
+                  <label className="block text-sm font-medium text-[#4A4036] mb-3">Selecciona la fecha</label>
                   <input
                     type="date"
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
                     min={getMinDate()}
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all text-lg"
+                    className="w-full px-4 py-4 border-2 border-[#E8E4D9] rounded-xl focus:ring-2 focus:ring-[#8B7355] focus:border-[#8B7355] transition-all text-lg bg-[#FAF9F6]"
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">
+                  <label className="flex items-center gap-2 text-sm font-medium text-[#4A4036] mb-3">
                     <Clock size={16} />
                     Horario disponible: 7:30 AM - 7:00 PM
                   </label>
@@ -319,11 +316,10 @@ function Reservations() {
                         key={h}
                         type="button"
                         onClick={() => setHora(h)}
-                        className={`py-3 px-2 rounded-xl text-sm font-medium transition-all ${
-                          hora === h
-                            ? 'bg-amber-600 text-white shadow-lg scale-105'
-                            : 'bg-gray-100 text-gray-700 hover:bg-amber-100 hover:text-amber-700'
-                        }`}
+                        className={`py-3 px-2 rounded-xl text-sm font-medium transition-all ${hora === h
+                            ? 'bg-[#8B7355] text-white shadow-lg scale-105'
+                            : 'bg-[#F0EBE0] text-[#6B5D4D] hover:bg-[#E8E4D9]'
+                          }`}
                       >
                         {formatHora(h)}
                       </button>
@@ -336,7 +332,7 @@ function Reservations() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 bg-gray-100 text-gray-700 py-4 rounded-xl hover:bg-gray-200 transition font-semibold"
+                  className="flex-1 bg-[#F0EBE0] text-[#6B5D4D] py-4 rounded-xl hover:bg-[#E8E4D9] transition font-semibold"
                 >
                   Atrás
                 </button>
@@ -344,7 +340,7 @@ function Reservations() {
                   type="button"
                   onClick={() => setStep(3)}
                   disabled={!canProceedStep2}
-                  className="flex-1 bg-amber-600 text-white py-4 rounded-xl hover:bg-amber-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-[#8B7355] text-white py-4 rounded-xl hover:bg-[#6F5B43] transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   Continuar
                 </button>
@@ -354,14 +350,14 @@ function Reservations() {
 
           {/* Step 3: Número de Personas */}
           <div className={`transition-all duration-300 ${step === 3 ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-3xl shadow-xl p-8">
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#E8E4D9]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                  <Users className="text-amber-600" size={24} />
+                <div className="w-12 h-12 bg-[#F0EBE0] rounded-xl flex items-center justify-center">
+                  <Users className="text-[#8B7355]" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Número de Personas</h2>
-                  <p className="text-gray-500 text-sm">Máximo {MAX_PERSONAS} personas por reserva</p>
+                  <h2 className="text-2xl font-bold text-[#4A4036]">Número de Personas</h2>
+                  <p className="text-[#6B5D4D] text-sm">Máximo {MAX_PERSONAS} personas por reserva</p>
                 </div>
               </div>
 
@@ -370,49 +366,49 @@ function Reservations() {
                   type="button"
                   onClick={() => handlePersonasChange(-1)}
                   disabled={personas <= MIN_PERSONAS}
-                  className="w-16 h-16 flex items-center justify-center rounded-2xl bg-gray-100 hover:bg-gray-200 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-16 h-16 flex items-center justify-center rounded-2xl bg-[#F0EBE0] hover:bg-[#E8E4D9] transition disabled:opacity-30 disabled:cursor-not-allowed text-[#4A4036]"
                 >
                   <Minus size={28} />
                 </button>
-                
+
                 <div className="text-center">
-                  <span className="text-7xl font-bold text-gray-900">{personas}</span>
-                  <p className="text-gray-500 mt-2 text-lg">
+                  <span className="text-7xl font-bold text-[#4A4036]">{personas}</span>
+                  <p className="text-[#6B5D4D] mt-2 text-lg">
                     {personas === 1 ? "persona" : "personas"}
                   </p>
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={() => handlePersonasChange(1)}
                   disabled={personas >= MAX_PERSONAS}
-                  className="w-16 h-16 flex items-center justify-center rounded-2xl bg-amber-600 text-white hover:bg-amber-700 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-16 h-16 flex items-center justify-center rounded-2xl bg-[#8B7355] text-white hover:bg-[#6F5B43] transition disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
                 >
                   <Plus size={28} />
                 </button>
               </div>
 
               {/* Resumen */}
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 mb-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Resumen de tu reserva</h3>
+              <div className="bg-[#FAF9F6] rounded-2xl p-6 mb-6 border border-[#E8E4D9]">
+                <h3 className="font-semibold text-[#4A4036] mb-4">Resumen de tu reserva</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Nombre:</span>
-                    <span className="font-medium text-gray-900">{nombre}</span>
+                    <span className="text-[#6B5D4D]">Nombre:</span>
+                    <span className="font-medium text-[#4A4036]">{nombre}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Fecha:</span>
-                    <span className="font-medium text-gray-900">
+                    <span className="text-[#6B5D4D]">Fecha:</span>
+                    <span className="font-medium text-[#4A4036]">
                       {fecha ? new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '-'}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Hora:</span>
-                    <span className="font-medium text-gray-900">{hora ? formatHora(hora) : '-'}</span>
+                    <span className="text-[#6B5D4D]">Hora:</span>
+                    <span className="font-medium text-[#4A4036]">{hora ? formatHora(hora) : '-'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Personas:</span>
-                    <span className="font-medium text-gray-900">{personas}</span>
+                    <span className="text-[#6B5D4D]">Personas:</span>
+                    <span className="font-medium text-[#4A4036]">{personas}</span>
                   </div>
                 </div>
               </div>
@@ -421,14 +417,14 @@ function Reservations() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="flex-1 bg-gray-100 text-gray-700 py-4 rounded-xl hover:bg-gray-200 transition font-semibold"
+                  className="flex-1 bg-[#F0EBE0] text-[#6B5D4D] py-4 rounded-xl hover:bg-[#E8E4D9] transition font-semibold"
                 >
                   Atrás
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-amber-600 text-white py-4 rounded-xl hover:bg-amber-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-[#8B7355] text-white py-4 rounded-xl hover:bg-[#6F5B43] transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   {submitting ? "Procesando..." : "Confirmar Reserva"}
                 </button>

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Check, Plus, Minus, ShoppingCart, Clock, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Check, Clock, AlertCircle, ShoppingCart, Coffee, Soup } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 import imgTest from '../assets/FOTO3.jpeg';
 
@@ -13,7 +13,7 @@ function LunchBuilder() {
             day: 'numeric'
         }),
         basePrice: 14000,
-        imageUrl: imgTest, /*TESTEO DE PRECIOS*/
+        imageUrl: imgTest,
         mainDishes: [
             { id: 'main1', name: 'Pechuga a la Plancha', price: 0 },
             { id: 'main2', name: 'Carne Asada', price: 2000 },
@@ -46,10 +46,8 @@ function LunchBuilder() {
         sideDishes: [],
         soup: null,
         juice: null,
-        includeRice: true,
         includeSoup: true,
-        includeJuice: true,
-        includeIcopor: false
+        includeJuice: true
     });
 
     // Datos del cliente
@@ -82,25 +80,15 @@ function LunchBuilder() {
             total += juice?.price || 0;
         }
 
-        if (order.includeIcopor) {
-            total += RESTAURANT_INFO.prices.icopor;
-        }
-
-        if (!order.includeRice) {
-            total -= 500; // Descuento por no incluir arroz
-        }
-
         return total;
     };
 
     const totalPrice = calculateTotal();
 
-    // Manejar selección de plato principal
     const selectMainDish = (dishId) => {
         setOrder({ ...order, mainDish: dishId });
     };
 
-    // Manejar selección de acompañamientos (múltiple)
     const toggleSideDish = (dishId) => {
         if (order.sideDishes.includes(dishId)) {
             setOrder({
@@ -115,7 +103,6 @@ function LunchBuilder() {
         }
     };
 
-    // Validar formulario
     const isFormValid = () => {
         return (
             customerData.name.trim() !== '' &&
@@ -124,7 +111,6 @@ function LunchBuilder() {
         );
     };
 
-    // Enviar pedido por WhatsApp
     const sendOrder = () => {
         if (!isFormValid()) {
             alert('Por favor completa todos los campos requeridos');
@@ -143,7 +129,7 @@ function LunchBuilder() {
             : 'Sin jugo';
 
         const message = `
-        *PEDIDO DE ALMUERZO - MANA*
+*PEDIDO DE ALMUERZO - MANA*
 
 *Fecha:* ${dailyMenu.date}
 
@@ -156,12 +142,10 @@ function LunchBuilder() {
 - Acompañamientos: ${sideDishNames || 'Ninguno'}
 - Sopa: ${soupName}
 - Jugo: ${juiceName}
-- Arroz: ${order.includeRice ? 'Sí' : 'No'}
-${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
 
- -Total: $${totalPrice.toLocaleString('es-CO')}*
+*Total: $${totalPrice.toLocaleString('es-CO')}*
 
- Confirmaré 2 horas antes de la entrega.
+Confirmaré 2 horas antes de la entrega.
     `.trim();
 
         const whatsappUrl = `${SOCIAL_MEDIA.whatsapp}?text=${encodeURIComponent(message)}`;
@@ -169,73 +153,86 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="bg-mana-brown text-white py-12">
-                <div className="container mx-auto px-4">
+        <div className="min-h-screen bg-[#FDFBF7] pt-28 pb-12">
+
+            {/* Header / Hero */}
+            <div className="bg-[#8C705F] text-white py-12 px-4 rounded-[2.5rem] shadow-xl relative overflow-hidden mx-4">
+                <div className="absolute inset-0 bg-black/10"></div>
+
+                <div className="container mx-auto relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                        <h1 className="text-3xl md:text-5xl font-bold mb-3 tracking-tight">
                             Arma Tu Almuerzo
                         </h1>
-                        <p className="text-xl text-white/90 mb-2">
+                        <p className="text-xl text-[#F0EBE0] mb-4 capitalize font-medium">
                             {dailyMenu.date}
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-white/90">
-                            <Clock size={20} />
-                            <span>Disponible de {RESTAURANT_INFO.schedule.almuerzo.start} a {RESTAURANT_INFO.schedule.almuerzo.end}</span>
+                        <div className="inline-flex items-center gap-2 bg-[#FDFBF7]/20 backdrop-blur-md px-4 py-2 rounded-full text-white border border-white/20">
+                            <Clock size={18} />
+                            <span className="text-sm font-medium">Disponible de {RESTAURANT_INFO.schedule.almuerzo.start} a {RESTAURANT_INFO.schedule.almuerzo.end}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-12">
+            <div className="container mx-auto px-4 py-8 relative z-20">
                 <div className="max-w-6xl mx-auto">
                     <div className="grid lg:grid-cols-3 gap-8">
-                        {/* Formulario de armado */}
-                        <div className="lg:col-span-2 space-y-6">
+
+                        {/* COLUMNA IZQUIERDA: Formulario de selección */}
+                        <div className="lg:col-span-2 space-y-8">
 
                             {/* Imagen del día */}
-                            <div className="bg-white rounded-xl overflow-hidden shadow-lg">
+                            <div className="bg-white rounded-3xl overflow-hidden shadow-lg border border-[#E8E4D9]">
+                                {/**/}
                                 <img
                                     src={dailyMenu.imageUrl}
                                     alt="Almuerzo del día"
-                                    className="w-full h-64 object-cover"
+                                    className="w-full h-128 object-cover"
                                 />
-                                <div className="p-6">
-                                    <h3 className="text-2xl font-bold text-mana-brown mb-2">
-                                        Menú Ejecutivo del Día
-                                    </h3>
-                                    <p className="text-gray-600">
-                                        Precio base: <span className="font-bold text-mana-brown text-xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
-                                    </p>
+                                <div className="p-6 bg-white">
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <h3 className="text-2xl font-bold text-[#6F4E37]">
+                                                Menú Ejecutivo
+                                            </h3>
+                                            <p className="text-[#8C705F]">Sazón casera y natural</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm text-[#9A8C7D]">Precio base</p>
+                                            <span className="font-bold text-[#8B7355] text-2xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Plato Principal */}
-                            <div className="bg-white rounded-xl p-6 shadow-lg">
-                                <h3 className="text-xl font-bold text-mana-brown mb-4 flex items-center gap-2">
-                                    <span className="w-8 h-8 bg-mana-gold text-white rounded-full flex items-center justify-center font-bold">1</span>
-                                    Elige tu Plato Principal *
+                            {/* 1. Plato Principal */}
+                            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg border border-[#E8E4D9]">
+                                <h3 className="text-xl font-bold text-[#6F4E37] mb-6 flex items-center gap-3 border-b border-[#E8E4D9] pb-4">
+                                    <span className="w-8 h-8 bg-[#8B7355] text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                                    Elige tu Plato Principal <span className="text-red-400 text-sm">*</span>
                                 </h3>
-                                <div className="grid sm:grid-cols-2 gap-3">
+                                <div className="grid sm:grid-cols-2 gap-4">
                                     {dailyMenu.mainDishes.map(dish => (
                                         <button
                                             key={dish.id}
                                             onClick={() => selectMainDish(dish.id)}
-                                            className={`p-4 rounded-lg border-2 text-left transition-all ${order.mainDish === dish.id
-                                                ? 'border-mana-gold bg-mana-cream'
-                                                : 'border-gray-200 hover:border-mana-brown'
+                                            className={`p-5 rounded-2xl border-2 text-left transition-all duration-200 group ${order.mainDish === dish.id
+                                                ? 'border-[#8B7355] bg-[#F0EBE0] shadow-sm'
+                                                : 'border-[#E8E4D9] bg-white hover:border-[#8B7355]/50'
                                                 }`}
                                         >
                                             <div className="flex items-start justify-between">
                                                 <div className="flex-1">
-                                                    <p className="font-semibold text-gray-800">{dish.name}</p>
+                                                    <p className={`font-semibold ${order.mainDish === dish.id ? 'text-[#6F4E37]' : 'text-gray-700'}`}>{dish.name}</p>
                                                     {dish.price > 0 && (
-                                                        <p className="text-sm text-mana-gold font-medium">+${dish.price.toLocaleString('es-CO')}</p>
+                                                        <p className="text-sm text-[#8B7355] font-medium mt-1">+${dish.price.toLocaleString('es-CO')}</p>
                                                     )}
                                                 </div>
                                                 {order.mainDish === dish.id && (
-                                                    <Check className="text-mana-gold flex-shrink-0" size={24} />
+                                                    <div className="w-6 h-6 bg-[#8B7355] rounded-full flex items-center justify-center text-white">
+                                                        <Check size={14} />
+                                                    </div>
                                                 )}
                                             </div>
                                         </button>
@@ -243,270 +240,190 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                 </div>
                             </div>
 
-                            {/* Acompañamientos */}
-                            <div className="bg-white rounded-xl p-6 shadow-lg">
-                                <h3 className="text-xl font-bold text-mana-brown mb-4 flex items-center gap-2">
-                                    <span className="w-8 h-8 bg-mana-gold text-white rounded-full flex items-center justify-center font-bold">2</span>
-                                    Elige tus Acompañamientos (máx. 2)
+                            {/* 2. Acompañamientos */}
+                            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg border border-[#E8E4D9]">
+                                <h3 className="text-xl font-bold text-[#6F4E37] mb-6 flex items-center gap-3 border-b border-[#E8E4D9] pb-4">
+                                    <span className="w-8 h-8 bg-[#8B7355] text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                                    Acompañamientos <span className="text-sm font-normal text-[#8C705F]">(Máximo 2)</span>
                                 </h3>
-                                <div className="grid sm:grid-cols-2 gap-3">
+                                <div className="grid sm:grid-cols-2 gap-4">
                                     {dailyMenu.sideDishes.map(dish => (
                                         <button
                                             key={dish.id}
                                             onClick={() => toggleSideDish(dish.id)}
                                             disabled={!order.sideDishes.includes(dish.id) && order.sideDishes.length >= 2}
-                                            className={`p-4 rounded-lg border-2 text-left transition-all ${order.sideDishes.includes(dish.id)
-                                                ? 'border-mana-gold bg-mana-cream'
+                                            className={`p-5 rounded-2xl border-2 text-left transition-all duration-200 ${order.sideDishes.includes(dish.id)
+                                                ? 'border-[#8B7355] bg-[#F0EBE0] shadow-sm'
                                                 : order.sideDishes.length >= 2
-                                                    ? 'border-gray-200 opacity-50 cursor-not-allowed'
-                                                    : 'border-gray-200 hover:border-mana-brown'
+                                                    ? 'border-[#E8E4D9] bg-gray-50 opacity-50 cursor-not-allowed'
+                                                    : 'border-[#E8E4D9] bg-white hover:border-[#8B7355]/50'
                                                 }`}
                                         >
                                             <div className="flex items-start justify-between">
                                                 <div className="flex-1">
-                                                    <p className="font-semibold text-gray-800">{dish.name}</p>
+                                                    <p className={`font-semibold ${order.sideDishes.includes(dish.id) ? 'text-[#6F4E37]' : 'text-gray-700'}`}>{dish.name}</p>
                                                     {dish.price > 0 && (
-                                                        <p className="text-sm text-mana-gold font-medium">+${dish.price.toLocaleString('es-CO')}</p>
+                                                        <p className="text-sm text-[#8B7355] font-medium mt-1">+${dish.price.toLocaleString('es-CO')}</p>
                                                     )}
                                                 </div>
                                                 {order.sideDishes.includes(dish.id) && (
-                                                    <Check className="text-mana-gold flex-shrink-0" size={24} />
+                                                    <div className="w-6 h-6 bg-[#8B7355] rounded-full flex items-center justify-center text-white">
+                                                        <Check size={14} />
+                                                    </div>
                                                 )}
                                             </div>
                                         </button>
                                     ))}
                                 </div>
-                                <p className="text-sm text-gray-500 mt-3">
+                                <p className="text-sm text-[#9A8C7D] mt-4 text-right">
                                     Seleccionados: {order.sideDishes.length}/2
                                 </p>
                             </div>
 
-                            {/* Sopa */}
-                            <div className="bg-white rounded-xl p-6 shadow-lg">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-mana-brown flex items-center gap-2">
-                                        <span className="w-8 h-8 bg-mana-gold text-white rounded-full flex items-center justify-center font-bold">3</span>
-                                        Sopa
-                                    </h3>
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={order.includeSoup}
-                                            onChange={(e) => setOrder({ ...order, includeSoup: e.target.checked })}
-                                            className="w-5 h-5 text-mana-gold rounded"
-                                        />
-                                        <span className="text-sm text-gray-600">Incluir sopa</span>
-                                    </label>
+                            {/* 3. Sopa & Jugo (Grid) */}
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {/* Sopa */}
+                                <div className="bg-white rounded-3xl p-6 shadow-lg border border-[#E8E4D9]">
+                                    <div className="flex items-center justify-between mb-4 border-b border-[#E8E4D9] pb-3">
+                                        <h3 className="text-lg font-bold text-[#6F4E37] flex items-center gap-2">
+                                            <Soup size={20} className="text-[#8B7355]" /> Sopa
+                                        </h3>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked={order.includeSoup} onChange={(e) => setOrder({ ...order, includeSoup: e.target.checked })} className="sr-only peer" />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8B7355]"></div>
+                                        </label>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {dailyMenu.soups.map(soup => (
+                                            <button
+                                                key={soup.id}
+                                                onClick={() => setOrder({ ...order, soup: soup.id })}
+                                                disabled={!order.includeSoup}
+                                                className={`w-full p-3 rounded-xl border text-left transition-all flex justify-between items-center ${!order.includeSoup
+                                                    ? 'opacity-40 cursor-not-allowed border-gray-100'
+                                                    : order.soup === soup.id
+                                                        ? 'border-[#8B7355] bg-[#F0EBE0]'
+                                                        : 'border-[#E8E4D9] hover:bg-[#FAF9F6]'
+                                                    }`}
+                                            >
+                                                <span className="text-sm font-medium text-[#6F4E37]">{soup.name}</span>
+                                                {soup.price > 0 && <span className="text-xs text-[#8B7355] font-bold">+${soup.price}</span>}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="grid sm:grid-cols-2 gap-3">
-                                    {dailyMenu.soups.map(soup => (
-                                        <button
-                                            key={soup.id}
-                                            onClick={() => setOrder({ ...order, soup: soup.id })}
-                                            disabled={!order.includeSoup}
-                                            className={`p-4 rounded-lg border-2 text-left transition-all ${!order.includeSoup
-                                                ? 'opacity-50 cursor-not-allowed border-gray-200'
-                                                : order.soup === soup.id
-                                                    ? 'border-mana-gold bg-mana-cream'
-                                                    : 'border-gray-200 hover:border-mana-brown'
-                                                }`}
-                                        >
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <p className="font-semibold text-gray-800">{soup.name}</p>
-                                                    {soup.price > 0 && (
-                                                        <p className="text-sm text-mana-gold font-medium">+${soup.price.toLocaleString('es-CO')}</p>
-                                                    )}
-                                                </div>
-                                                {order.soup === soup.id && order.includeSoup && (
-                                                    <Check className="text-mana-gold flex-shrink-0" size={24} />
-                                                )}
-                                            </div>
-                                        </button>
-                                    ))}
+
+                                {/* Jugo */}
+                                <div className="bg-white rounded-3xl p-6 shadow-lg border border-[#E8E4D9]">
+                                    <div className="flex items-center justify-between mb-4 border-b border-[#E8E4D9] pb-3">
+                                        <h3 className="text-lg font-bold text-[#6F4E37] flex items-center gap-2">
+                                            <Coffee size={20} className="text-[#8B7355]" /> Jugo
+                                        </h3>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked={order.includeJuice} onChange={(e) => setOrder({ ...order, includeJuice: e.target.checked })} className="sr-only peer" />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8B7355]"></div>
+                                        </label>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {dailyMenu.juices.map(juice => (
+                                            <button
+                                                key={juice.id}
+                                                onClick={() => setOrder({ ...order, juice: juice.id })}
+                                                disabled={!order.includeJuice}
+                                                className={`w-full p-3 rounded-xl border text-left transition-all flex justify-between items-center ${!order.includeJuice
+                                                    ? 'opacity-40 cursor-not-allowed border-gray-100'
+                                                    : order.juice === juice.id
+                                                        ? 'border-[#8B7355] bg-[#F0EBE0]'
+                                                        : 'border-[#E8E4D9] hover:bg-[#FAF9F6]'
+                                                    }`}
+                                            >
+                                                <span className="text-sm font-medium text-[#6F4E37]">{juice.name}</span>
+                                                {juice.price > 0 && <span className="text-xs text-[#8B7355] font-bold">+${juice.price}</span>}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Jugo */}
-                            <div className="bg-white rounded-xl p-6 shadow-lg">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-mana-brown flex items-center gap-2">
-                                        <span className="w-8 h-8 bg-mana-gold text-white rounded-full flex items-center justify-center font-bold">4</span>
-                                        Jugo
-                                    </h3>
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={order.includeJuice}
-                                            onChange={(e) => setOrder({ ...order, includeJuice: e.target.checked })}
-                                            className="w-5 h-5 text-mana-gold rounded"
-                                        />
-                                        <span className="text-sm text-gray-600">Incluir jugo</span>
-                                    </label>
-                                </div>
-                                <div className="grid sm:grid-cols-2 gap-3">
-                                    {dailyMenu.juices.map(juice => (
-                                        <button
-                                            key={juice.id}
-                                            onClick={() => setOrder({ ...order, juice: juice.id })}
-                                            disabled={!order.includeJuice}
-                                            className={`p-4 rounded-lg border-2 text-left transition-all ${!order.includeJuice
-                                                ? 'opacity-50 cursor-not-allowed border-gray-200'
-                                                : order.juice === juice.id
-                                                    ? 'border-mana-gold bg-mana-cream'
-                                                    : 'border-gray-200 hover:border-mana-brown'
-                                                }`}
-                                        >
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <p className="font-semibold text-gray-800">{juice.name}</p>
-                                                    {juice.price > 0 && (
-                                                        <p className="text-sm text-mana-gold font-medium">+${juice.price.toLocaleString('es-CO')}</p>
-                                                    )}
-                                                </div>
-                                                {order.juice === juice.id && order.includeJuice && (
-                                                    <Check className="text-mana-gold flex-shrink-0" size={24} />
-                                                )}
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Opciones Adicionales */}
-                            <div className="bg-white rounded-xl p-6 shadow-lg">
-                                <h3 className="text-xl font-bold text-mana-brown mb-4">
-                                    Opciones Adicionales
-                                </h3>
-                                <div className="space-y-3">
-                                    <label className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-mana-brown transition-all">
-                                        <span className="font-medium text-gray-800">¿Incluir arroz?</span>
-                                        <input
-                                            type="checkbox"
-                                            checked={order.includeRice}
-                                            onChange={(e) => setOrder({ ...order, includeRice: e.target.checked })}
-                                            className="w-5 h-5 text-mana-gold rounded"
-                                        />
-                                    </label>
-                                    <label className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-mana-brown transition-all">
-                                        <div>
-                                            <span className="font-medium text-gray-800">El icopor esta incluido en el domicilio</span>
-                                            <p className="text-sm text-gray-500">+${RESTAURANT_INFO.prices.icopor.toLocaleString('es-CO')}</p>
-                                        </div>
-                                        <input
-                                            type="checkbox"
-                                            checked={order.includeIcopor}
-                                            onChange={(e) => setOrder({ ...order, includeIcopor: e.target.checked })}
-                                            className="w-5 h-5 text-mana-gold rounded"
-                                        />
-                                    </label>
-                                </div>
-                            </div>
                         </div>
 
-                        {/* Resumen del Pedido */}
+                        {/* COLUMNA DERECHA: Resumen (Sticky) */}
                         <div className="lg:col-span-1">
-                            <div className="bg-white rounded-xl p-6 shadow-lg sticky top-24">
-                                <h3 className="text-2xl font-bold text-mana-brown mb-6">
-                                    Resumen del Pedido
+                            <div className="bg-white rounded-3xl p-6 shadow-xl sticky top-28 border border-[#E8E4D9]">
+                                <h3 className="text-2xl font-bold text-[#6F4E37] mb-6 flex items-center gap-2">
+                                    <ShoppingCart size={24} className="text-[#8B7355]" />
+                                    Tu Pedido
                                 </h3>
 
-                                {/* Datos del Cliente */}
-                                <div className="mb-6 space-y-4">
+                                {/* Inputs Datos Cliente */}
+                                <div className="space-y-4 mb-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Tu Nombre *
-                                        </label>
+                                        <label className="block text-xs font-bold text-[#8C705F] uppercase tracking-wider mb-1">Nombre</label>
                                         <input
                                             type="text"
                                             value={customerData.name}
                                             onChange={(e) => setCustomerData({ ...customerData, name: e.target.value })}
-                                            placeholder="Ej: Santiago"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mana-gold"
+                                            placeholder="Tu nombre"
+                                            className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-1 focus:ring-[#8B7355] transition-all text-[#4A4036]"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Teléfono *
-                                        </label>
+                                        <label className="block text-xs font-bold text-[#8C705F] uppercase tracking-wider mb-1">Teléfono</label>
                                         <input
                                             type="tel"
                                             value={customerData.phone}
                                             onChange={(e) => setCustomerData({ ...customerData, phone: e.target.value })}
-                                            placeholder="Ej: 3001234567"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mana-gold"
+                                            placeholder="Tu teléfono"
+                                            className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-1 focus:ring-[#8B7355] transition-all text-[#4A4036]"
                                         />
                                     </div>
                                 </div>
 
-                                {/* Detalles del Pedido */}
-                                <div className="border-t border-gray-200 pt-6 mb-6">
-                                    <div className="space-y-3 text-sm">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-600">Precio base</span>
-                                            <span className="font-medium">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
-                                        </div>
-                                        {order.mainDish && (
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-600">Plato principal</span>
-                                                <span className="font-medium">
-                                                    ${(dailyMenu.mainDishes.find(d => d.id === order.mainDish)?.price || 0).toLocaleString('es-CO')}
-                                                </span>
-                                            </div>
-                                        )}
-                                        {order.includeIcopor && (
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-600">Icopor</span>
-                                                <span className="font-medium">${RESTAURANT_INFO.prices.icopor.toLocaleString('es-CO')}</span>
-                                            </div>
-                                        )}
-                                        {!order.includeRice && (
-                                            <div className="flex justify-between text-green-600">
-                                                <span>Sin arroz (desc.)</span>
-                                                <span className="font-medium">-$500</span>
-                                            </div>
-                                        )}
+                                {/* Lista de Items */}
+                                <div className="space-y-3 mb-6 border-t border-dashed border-[#E8E4D9] pt-4">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-[#8C705F]">Base</span>
+                                        <span className="font-medium text-[#6F4E37]">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
                                     </div>
+
+                                    {order.mainDish && (
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-[#8C705F]">Extra Plato</span>
+                                            <span className="font-medium text-[#6F4E37]">${(dailyMenu.mainDishes.find(d => d.id === order.mainDish)?.price || 0).toLocaleString('es-CO')}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Total */}
-                                <div className="bg-mana-cream rounded-lg p-4 mb-6">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-lg font-bold text-gray-800">Total</span>
-                                        <span className="text-3xl font-bold text-mana-gold">
-                                            ${totalPrice.toLocaleString('es-CO')}
-                                        </span>
-                                    </div>
+                                <div className="bg-[#6F4E37] rounded-xl p-4 mb-6 flex justify-between items-center text-white shadow-lg">
+                                    <span className="text-lg font-medium">Total</span>
+                                    <span className="text-3xl font-bold text-[#F0EBE0]">
+                                        ${totalPrice.toLocaleString('es-CO')}
+                                    </span>
                                 </div>
 
-                                {/* Alerta de confirmación */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex gap-3">
-                                    <AlertCircle className="text-blue-500 flex-shrink-0" size={20} />
-                                    <p className="text-xs text-blue-700">
-                                        Recuerda confirmar tu pedido 2 horas antes de la entrega
-                                    </p>
-                                </div>
-
-                                {/* Botón de Enviar */}
+                                {/* Botón Acción */}
                                 <button
                                     onClick={sendOrder}
                                     disabled={!isFormValid()}
-                                    className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center gap-2 transition-all ${isFormValid()
-                                        ? 'bg-green-500 text-white hover:bg-green-600 hover:shadow-lg active:scale-95'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-md ${isFormValid()
+                                        ? 'bg-[#8B7355] text-white hover:bg-[#6F5B43] active:scale-95'
+                                        : 'bg-[#E8E4D9] text-[#9A8C7D] cursor-not-allowed'
                                         }`}
                                 >
-                                    <ShoppingCart size={24} />
-                                    Enviar Pedido por WhatsApp
+                                    Enviar Pedido
                                 </button>
 
-                                {!isFormValid() && (
-                                    <p className="text-sm text-red-500 text-center mt-3">
-                                        Completa los campos requeridos (*)
+                                <div className="mt-4 flex gap-2 p-3 bg-amber-50 rounded-lg border border-amber-100">
+                                    <AlertCircle className="text-amber-600 flex-shrink-0" size={16} />
+                                    <p className="text-xs text-amber-800 leading-tight">
+                                        Al enviar, se abrirá WhatsApp con el detalle de tu pedido para confirmar.
                                     </p>
-                                )}
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -515,4 +432,3 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
 }
 
 export default LunchBuilder;
-

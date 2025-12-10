@@ -56,7 +56,7 @@ const ClientsMenu = () => {
     return (
         <div className="min-h-screen bg-[#FAFAFA]">
             {/* Header / Hero */}
-            <div className="bg-[#6B3E26]/80 text-white py-16 px-4 text-center relative overflow-hidden">
+            <div className="bg-[#6B3E26]/80 text-white py-16 px-4 text-center relative overflow-hidden pt-32">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-4 relative z-10">Nuestro Menú</h1>
                 <p className="text-white/90 text-lg max-w-2xl mx-auto relative z-10">
