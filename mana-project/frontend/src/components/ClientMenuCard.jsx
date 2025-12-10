@@ -1,12 +1,19 @@
-import React from 'react';
-import { ShoppingCart } from 'lucide-react';
-import { SOCIAL_MEDIA } from '../utils/constants';
+import React, { useState } from 'react';
+import { ShoppingCart, Plus, Check } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const ClientMenuCard = ({ item }) => {
-    const handleOrder = () => {
-        const message = `Hola! Me interesa ordenar:\n\n*${item.nombre}*\nPrecio: $${item.precio.toLocaleString('es-CO')}`;
-        const whatsappUrl = `${SOCIAL_MEDIA.whatsapp}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
+    const { addToCart } = useCart();
+    const [added, setAdded] = useState(false);
+
+    const handleAddToCart = () => {
+        addToCart(item);
+        setAdded(true);
+        
+        // Resetear el estado después de 1.5 segundos
+        setTimeout(() => {
+            setAdded(false);
+        }, 1500);
     };
 
     return (
@@ -65,11 +72,25 @@ const ClientMenuCard = ({ item }) => {
                     </div>
 
                     <button
-                        onClick={handleOrder}
-                        className="flex items-center space-x-2 px-5 py-3 rounded-lg font-semibold transition-all transform bg-mana-brown text-white hover:bg-mana-gold/30 hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
+                        onClick={handleAddToCart}
+                        disabled={added}
+                        className={`flex items-center space-x-2 px-5 py-3 rounded-lg font-semibold transition-all transform active:scale-95 ${
+                            added
+                                ? 'bg-green-500 text-white'
+                                : 'bg-mana-brown text-white hover:bg-mana-gold/30 hover:shadow-lg hover:-translate-y-0.5'
+                        }`}
                     >
-                        <ShoppingCart size={18} />
-                        <span>Ordenar</span>
+                        {added ? (
+                            <>
+                                <Check size={18} />
+                                <span>Agregado</span>
+                            </>
+                        ) : (
+                            <>
+                                <Plus size={18} />
+                                <span>Agregar</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
