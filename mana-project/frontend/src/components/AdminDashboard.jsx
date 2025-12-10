@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Menu from '../pages/Menu';
 import AdminReservations from '../pages/Admin_reservations';
 
-const LOGOUT_API_URL = "http://localhost:4000/api/auth/logout";
+const LOGOUT_API_URL = "/api/auth/logout";
 
 function AdminDashboard() {
   const navigate = useNavigate();

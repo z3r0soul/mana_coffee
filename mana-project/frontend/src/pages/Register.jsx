@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/api/auth/register";
+const API_URL = "/api/auth/register";
 
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: "",
-    apellido:"",
-    telefono:"",
+    apellido: "",
+    telefono: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -42,19 +42,19 @@ function Register() {
     const telefono = (formData.telefono || "").trim();
     const telefonoDigits = telefono.replace(/\D/g, "");
     if (telefonoDigits.length < 10) {
-    setError("El teléfono debe tener al menos 10 dígitos");
-    return;
+      setError("El teléfono debe tener al menos 10 dígitos");
+      return;
     }
     if (!/^\d+$/.test(telefonoDigits)) {
-    setError("El teléfono debe ser numérico");
-    return;
+      setError("El teléfono debe ser numérico");
+      return;
     }
 
     const email = (formData.email || "").trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-    setError("El correo electrónico no es válido");
-    return;
+      setError("El correo electrónico no es válido");
+      return;
     }
     setLoading(true);
 
@@ -69,11 +69,11 @@ function Register() {
         withCredentials: true, // Permite enviar/recibir cookies
       });
 
-     
+
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       alert("Registro exitoso");
-      navigate("/"); 
+      navigate("/");
     } catch (error) {
       console.error("Error al registrarse:", error);
       setError(
@@ -162,7 +162,7 @@ function Register() {
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 placeholder="3123456789"
               />
-            </div> 
+            </div>
 
             {/* Email */}
             <div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check, Clock, AlertCircle, ShoppingCart, Coffee, Soup } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 import imgTest from '../assets/FOTO3.jpeg';
+import { useEffect } from 'react';
 import axios from 'axios';
 
 function LunchBuilder() {
@@ -25,7 +26,7 @@ function LunchBuilder() {
     useEffect(() => {
         const fetchLunchImage = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/lunch/today');
+                const response = await axios.get('/api/lunch/today');
                 if (response.data.imageUrl) {
                     setLunchImage(response.data.imageUrl);
                 }
@@ -34,7 +35,7 @@ function LunchBuilder() {
                 // Mantener imagen por defecto si hay error
             }
         };
-        
+
         fetchLunchImage();
     }, []);
 

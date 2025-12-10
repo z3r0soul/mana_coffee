@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminDashboard from '../components/AdminDashboard';
 
-const CHECK_ADMIN_URL = "http://localhost:4000/api/auth/check-admin";
+const CHECK_ADMIN_URL = "/api/auth/check-admin";
 
 function Admin() {
   const navigate = useNavigate();

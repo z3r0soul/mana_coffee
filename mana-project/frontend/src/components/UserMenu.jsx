@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User, LogOut, UserCircle } from 'lucide-react';
-const API_URL = "http://localhost:4000/api/auth/logout";
-const PROFILE_API = "http://localhost:4000/api/auth/profile"; // endpoint protegido que usa verificarToken en backend
+const API_URL = "/api/auth/logout";
+const PROFILE_API = "/api/auth/profile"; // endpoint protegido que usa verificarToken en backend
 
 function UserMenu() {
     const [isOpen, setIsOpen] = useState(false);

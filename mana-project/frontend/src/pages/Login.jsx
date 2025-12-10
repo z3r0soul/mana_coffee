@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/api/auth/login";
+const API_URL = "/api/auth/login";
 
 function Login() {
 
@@ -46,7 +46,7 @@ function Login() {
         email: formData.email,
         password: formData.password,
       }, {
-        withCredentials: true, 
+        withCredentials: true,
       });
 
       // Solo guardar usuario en 

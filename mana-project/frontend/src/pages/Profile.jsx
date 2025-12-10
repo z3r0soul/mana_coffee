@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Calendar, Clock, Users, AlertCircle, CheckCircle, XCircle, Loader2, Mail, Phone, User, LogOut, Home, CalendarPlus } from "lucide-react";
 
-const API_URL = "http://localhost:4000/api/auth/profile";
-const LOGOUT_API_URL = "http://localhost:4000/api/auth/logout";
-const CHECK_ADMIN_URL = "http://localhost:4000/api/auth/check-admin";
-const RESERVATIONS_URL = "http://localhost:4000/api/reservations";
+const API_URL = "/api/auth/profile";
+const LOGOUT_API_URL = "/api/auth/logout";
+const CHECK_ADMIN_URL = "/api/auth/check-admin";
+const RESERVATIONS_URL = "/api/reservations";
 
 function Profile() {
   const navigate = useNavigate();
@@ -27,21 +27,21 @@ function Profile() {
         withCredentials: true, // Envía la cookie con el token
       });
       setUser(response.data);
-      
+
       // Verificar si es admin
       const adminCheck = await axios.get(CHECK_ADMIN_URL, {
         withCredentials: true,
       });
-      
+
       if (adminCheck.data.isAdmin) {
         // Si es admin, redirigir al panel de administración
         navigate("/admin");
         return;
       }
-      
+
       // Cargar reservaciones del usuario
       fetchUserReservations();
-      
+
       setLoading(false);
     } catch (error) {
       console.error("Error al obtener perfil:", error);
@@ -73,11 +73,11 @@ function Profile() {
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return dateStr;
-    return date.toLocaleDateString('es-ES', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -108,7 +108,7 @@ function Profile() {
   };
 
   const handleLogout = async (e) => {
-    
+
     e.preventDefault();
     try {
       await axios.post(LOGOUT_API_URL, {}, {
@@ -119,8 +119,8 @@ function Profile() {
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
- 
-    
+
+
   };
 
   if (loading) {
@@ -166,7 +166,7 @@ function Profile() {
           </div>
         </div>
       </div>
-      
+
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-4xl">
         {/* Nombre y email */}
         <div className="text-center mb-8">
@@ -183,22 +183,20 @@ function Profile() {
         <div className="flex justify-center gap-2 mb-8">
           <button
             onClick={() => setActiveTab('info')}
-            className={`px-6 py-3 rounded-full font-medium transition-all ${
-              activeTab === 'info' 
-                ? 'bg-mana-brown text-white shadow-lg' 
-                : 'bg-white text-mana-brown hover:bg-mana-sand'
-            }`}
+            className={`px-6 py-3 rounded-full font-medium transition-all ${activeTab === 'info'
+              ? 'bg-mana-brown text-white shadow-lg'
+              : 'bg-white text-mana-brown hover:bg-mana-sand'
+              }`}
           >
             <User size={18} className="inline mr-2" />
             Mi Información
           </button>
           <button
             onClick={() => setActiveTab('reservations')}
-            className={`px-6 py-3 rounded-full font-medium transition-all ${
-              activeTab === 'reservations' 
-                ? 'bg-mana-brown text-white shadow-lg' 
-                : 'bg-white text-mana-brown hover:bg-mana-sand'
-            }`}
+            className={`px-6 py-3 rounded-full font-medium transition-all ${activeTab === 'reservations'
+              ? 'bg-mana-brown text-white shadow-lg'
+              : 'bg-white text-mana-brown hover:bg-mana-sand'
+              }`}
           >
             <Calendar size={18} className="inline mr-2" />
             Reservaciones
@@ -218,7 +216,7 @@ function Profile() {
                 <User className="text-mana-brown" />
                 Datos Personales
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="group">
                   <label className="text-sm font-medium text-gray-500 flex items-center gap-2 mb-2">
@@ -306,7 +304,7 @@ function Profile() {
                   Nueva
                 </button>
               </div>
-              
+
               {loadingReservations ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="animate-spin text-mana-brown" size={32} />
@@ -329,8 +327,8 @@ function Profile() {
               ) : (
                 <div className="space-y-4">
                   {reservations.map((reserva) => (
-                    <div 
-                      key={reserva.id} 
+                    <div
+                      key={reserva.id}
                       className="bg-mana-cream/30 border border-mana-sand/50 rounded-2xl p-5 hover:shadow-md hover:border-mana-brown/30 transition group"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/api/menu";
+const API_URL = "/api/menu";
 
 function Menu() {
   const [menuItems, setMenuItems] = useState([]);

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Minus, Plus, Calendar, Clock, Users, User, Phone, Mail, CalendarDays, CheckCircle, Loader2, LogIn, X } from "lucide-react";
 
-const API_URL = "http://localhost:4000/api";
+const API_URL = "/api";
 
 function Reservations() {
   const navigate = useNavigate();

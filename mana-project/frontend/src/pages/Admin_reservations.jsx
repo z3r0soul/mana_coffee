@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  Phone, 
-  Mail, 
+import {
+  Calendar,
+  Clock,
+  Users,
+  Phone,
+  Mail,
   User,
   CheckCircle,
   XCircle,
@@ -16,7 +16,7 @@ import {
   Filter
 } from "lucide-react";
 
-const API_URL = "http://localhost:4000/api/reservations";
+const API_URL = "/api/reservations";
 
 function AdminReservations() {
   const [reservations, setReservations] = useState([]);
@@ -49,7 +49,7 @@ function AdminReservations() {
       await axios.patch(`${API_URL}/${id}/status`, { estado: newStatus }, {
         withCredentials: true,
       });
-      setReservations(prev => 
+      setReservations(prev =>
         prev.map(r => r.id === id ? { ...r, estado: newStatus } : r)
       );
     } catch (error) {
@@ -62,7 +62,7 @@ function AdminReservations() {
 
   const deleteReservation = async (id) => {
     if (!window.confirm("¿Estás seguro de eliminar esta reservación?")) return;
-    
+
     try {
       await axios.delete(`${API_URL}/${id}`, {
         withCredentials: true,
@@ -86,12 +86,12 @@ function AdminReservations() {
         // Formato simple: 2025-12-09
         date = new Date(dateStr + 'T00:00:00');
       }
-      
+
       if (isNaN(date.getTime())) return 'Fecha inválida';
-      
-      return date.toLocaleDateString('es-ES', { 
-        weekday: 'short', 
-        day: 'numeric', 
+
+      return date.toLocaleDateString('es-ES', {
+        weekday: 'short',
+        day: 'numeric',
         month: 'short',
         year: 'numeric'
       });
@@ -107,9 +107,9 @@ function AdminReservations() {
       const timeParts = timeStr.split(':');
       const hours = parseInt(timeParts[0]);
       const minutes = timeParts[1] || '00';
-      
+
       if (isNaN(hours)) return 'Hora inválida';
-      
+
       if (hours >= 12) {
         return `${hours === 12 ? 12 : hours - 12}:${minutes} PM`;
       }
@@ -151,7 +151,7 @@ function AdminReservations() {
 
   const filteredReservations = reservations.filter(r => {
     const matchesFilter = filter === "TODAS" || r.estado === filter;
-    const matchesSearch = 
+    const matchesSearch =
       r.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
       r.telefono.includes(searchTerm) ||
       r.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -315,7 +315,7 @@ function AdminReservations() {
                         </button>
                       </>
                     )}
-                    
+
                     {reservation.estado === "CONFIRMADA" && (
                       <button
                         onClick={() => updateStatus(reservation.id, "COMPLETADA")}
