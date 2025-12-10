@@ -9,7 +9,7 @@ export default defineConfig({
     host: true,
     port: 5174,
     allowedHosts: [
-      "subtemporal-conception-brusquely.ngrok-free.dev"
+      "unattempting-contestably-josefine.ngrok-free.dev"
     ],
     proxy: {
       '/api': {

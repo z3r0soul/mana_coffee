@@ -7,6 +7,7 @@ function Menu() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
@@ -48,23 +49,47 @@ function Menu() {
     e.preventDefault();
 
     try {
-      await axios.post(API_URL, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      if (editingId) {
+        // Actualizar item existente
+        await axios.put(`${API_URL}/${editingId}`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        alert("Item actualizado exitosamente");
+      } else {
+        // Crear nuevo item
+        await axios.post(API_URL, formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        alert("Item agregado exitosamente");
+      }
 
       // Limpiar formulario
       setFormData({ nombre: "", descripcion: "", precio: "", tipo: "CAFETERIA" });
       setShowForm(false);
+      setEditingId(null);
 
       // Recargar menú
       fetchMenuItems();
-      alert("Item agregado exitosamente");
     } catch (error) {
-      console.error("Error al crear item:", error);
-      alert("Error al crear el item");
+      console.error("Error al guardar item:", error);
+      alert("Error al guardar el item");
     }
+  };
+
+  const handleEdit = (item) => {
+    setFormData({
+      nombre: item.nombre,
+      descripcion: item.descripcion || "",
+      precio: item.precio,
+      tipo: item.tipo,
+    });
+    setEditingId(item.id);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
@@ -89,13 +114,19 @@ function Menu() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FDFBF7] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-2">
           <button
-            onClick={() => setShowForm(!showForm)}
-            className="mt-6 bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-700 transition"
+            onClick={() => {
+              setShowForm(!showForm);
+              if (showForm) {
+                setFormData({ nombre: "", descripcion: "", precio: "", tipo: "CAFETERIA" });
+                setEditingId(null);
+              }
+            }}
+            className="mt-6 bg-[#8C705F] text-white px-8 py-3 rounded-xl hover:bg-[#6F4E37] transition shadow-lg font-semibold"
           >
             {showForm ? "Cancelar" : "Agregar Nuevo Item"}
           </button>
@@ -103,11 +134,13 @@ function Menu() {
 
         {/* Formulario */}
         {showForm && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-12 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Agregar Item al Menú</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 max-w-2xl mx-auto border border-[#E8E4D9]">
+            <h2 className="text-3xl font-bold mb-6 text-[#6F4E37]">
+              {editingId ? "Editar Item del Menú" : "Agregar Item al Menú"}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[#8C705F] uppercase tracking-wider mb-2">
                   Nombre del Producto
                 </label>
                 <input
@@ -116,13 +149,13 @@ function Menu() {
                   value={formData.nombre}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
                   placeholder="Ej: Café Americano"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[#8C705F] uppercase tracking-wider mb-2">
                   Descripción
                 </label>
                 <textarea
@@ -130,13 +163,13 @@ function Menu() {
                   value={formData.descripcion}
                   onChange={handleInputChange}
                   rows="3"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
                   placeholder="Describe el producto..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[#8C705F] uppercase tracking-wider mb-2">
                   Precio ($)
                 </label>
                 <input
@@ -147,13 +180,13 @@ function Menu() {
                   required
                   step="0.01"
                   min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
                   placeholder="0.00"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-[#8C705F] uppercase tracking-wider mb-2">
                   Tipo de Producto
                 </label>
                 <select
@@ -161,7 +194,7 @@ function Menu() {
                   value={formData.tipo}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
+                  className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
                 >
                   <option value="CAFETERIA">Cafetería</option>
                   <option value="DESAYUNO">Desayuno</option>
@@ -172,9 +205,9 @@ function Menu() {
 
               <button
                 type="submit"
-                className="w-full bg-amber-600 text-white py-3 rounded-lg hover:bg-amber-700 transition font-semibold"
+                className="w-full bg-[#8C705F] text-white py-4 rounded-xl hover:bg-[#6F4E37] transition-all font-bold text-lg shadow-lg active:scale-95"
               >
-                Agregar Item
+                {editingId ? "Actualizar Item" : "Agregar Item"}
               </button>
             </form>
           </div>
@@ -183,7 +216,7 @@ function Menu() {
         {/* Grid de items del menú */}
         {menuItems.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-[#8C705F] font-medium">
               No hay items en el menú todavía
             </p>
           </div>
@@ -200,44 +233,52 @@ function Menu() {
               return (
                 <div
                   key={item.id}
-                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-6 flex flex-col"
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex flex-col border border-[#E8E4D9] hover:border-[#8B7355]"
                 >
                   {/* Badge del tipo */}
                   <div className="mb-3">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${tipoColors[item.tipo]}`}>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${tipoColors[item.tipo]}`}>
                       {item.tipo}
                     </span>
                   </div>
 
                   {/* Nombre del producto */}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold text-[#6F4E37] mb-2">
                     {item.nombre}
                   </h3>
 
                   {/* Descripción */}
                   {item.descripcion && (
-                    <p className="text-gray-600 text-sm mb-4 flex-grow">
+                    <p className="text-[#8C705F] text-sm mb-4 flex-grow">
                       {item.descripcion}
                     </p>
                   )}
 
                   {/* Precio formateado */}
                   <div className="mb-4">
-                    <span className="text-3xl font-bold text-amber-600">
+                    <span className="text-3xl font-bold text-[#8B7355]">
                       ${formatPrice(item.precio)}
                     </span>
                   </div>
 
-                  {/* Botón eliminar */}
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-semibold"
-                  >
-                    Eliminar
-                  </button>
+                  {/* Botones de acción */}
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="w-full bg-[#8C705F] text-white px-4 py-2.5 rounded-xl hover:bg-[#6F4E37] transition-all text-sm font-bold shadow-md active:scale-95"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="w-full bg-[#5D4037] text-white px-4 py-2.5 rounded-xl hover:bg-[#4E342E] transition-all text-sm font-bold shadow-md active:scale-95"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
 
                   {/* Fecha */}
-                  <div className="mt-2 text-xs text-gray-400 text-center">
+                  <div className="mt-3 text-xs text-[#9A8C7D] text-center font-medium">
                     {new Date(item.fecha).toLocaleDateString('es-ES')}
                   </div>
                 </div>
