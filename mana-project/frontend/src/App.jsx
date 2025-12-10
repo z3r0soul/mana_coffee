@@ -13,6 +13,7 @@ import Locations from './pages/Locations';
 import ClientsMenu from './pages/ClientsMenu';
 
 import Reservations from './pages/Reservations';
+import ClientsMenu from './pages/ClientsMenu';
 function App() {
   return (
     <BrowserRouter>
@@ -21,7 +22,6 @@ function App() {
         <Route path="/" element={<Home />} /> {/* Home */}
         <Route path="/LunchBuilder" element={<LunchBuilder />} />
         {/* <Route path="/LunchBuilder" element={<LunchBuilder />} /> */}
-        <Route path="/" element={<Home />} />
         <Route path="/ClientsMenu" element={<ClientsMenu />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />

@@ -32,7 +32,9 @@ function AdminReservations() {
   const fetchReservations = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_URL);
+      const response = await axios.get(API_URL, {
+        withCredentials: true,
+      });
       setReservations(response.data);
     } catch (error) {
       console.error("Error al cargar reservaciones:", error);
@@ -44,7 +46,9 @@ function AdminReservations() {
   const updateStatus = async (id, newStatus) => {
     setUpdating(id);
     try {
-      await axios.patch(`${API_URL}/${id}/status`, { estado: newStatus });
+      await axios.patch(`${API_URL}/${id}/status`, { estado: newStatus }, {
+        withCredentials: true,
+      });
       setReservations(prev => 
         prev.map(r => r.id === id ? { ...r, estado: newStatus } : r)
       );
@@ -60,7 +64,9 @@ function AdminReservations() {
     if (!window.confirm("¿Estás seguro de eliminar esta reservación?")) return;
     
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${API_URL}/${id}`, {
+        withCredentials: true,
+      });
       setReservations(prev => prev.filter(r => r.id !== id));
     } catch (error) {
       console.error("Error al eliminar:", error);
@@ -69,22 +75,48 @@ function AdminReservations() {
   };
 
   const formatDate = (dateStr) => {
-    const date = new Date(dateStr + 'T00:00:00');
-    return date.toLocaleDateString('es-ES', { 
-      weekday: 'short', 
-      day: 'numeric', 
-      month: 'short',
-      year: 'numeric'
-    });
+    if (!dateStr) return 'Sin fecha';
+    try {
+      // Manejar diferentes formatos de fecha
+      let date;
+      if (dateStr.includes('T')) {
+        // Formato ISO: 2025-12-09T00:00:00.000Z
+        date = new Date(dateStr);
+      } else {
+        // Formato simple: 2025-12-09
+        date = new Date(dateStr + 'T00:00:00');
+      }
+      
+      if (isNaN(date.getTime())) return 'Fecha inválida';
+      
+      return date.toLocaleDateString('es-ES', { 
+        weekday: 'short', 
+        day: 'numeric', 
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch (error) {
+      return 'Fecha inválida';
+    }
   };
 
   const formatTime = (timeStr) => {
-    const [hours, minutes] = timeStr.split(':');
-    const hour = parseInt(hours);
-    if (hour >= 12) {
-      return `${hour === 12 ? 12 : hour - 12}:${minutes} PM`;
+    if (!timeStr) return 'Sin hora';
+    try {
+      // Puede venir como "14:30:00" o "14:30"
+      const timeParts = timeStr.split(':');
+      const hours = parseInt(timeParts[0]);
+      const minutes = timeParts[1] || '00';
+      
+      if (isNaN(hours)) return 'Hora inválida';
+      
+      if (hours >= 12) {
+        return `${hours === 12 ? 12 : hours - 12}:${minutes} PM`;
+      }
+      return `${hours}:${minutes} AM`;
+    } catch (error) {
+      return 'Hora inválida';
     }
-    return `${hours}:${minutes} AM`;
   };
 
   const getStatusConfig = (estado) => {
