@@ -1,4 +1,5 @@
 import db from '../config/db.js';
+
 // Controlador para obtener el menú de almuerzo del día
 export const getLunchMenu = async (req, res) => {
   try {
@@ -21,5 +22,32 @@ export const getLunchMenu = async (req, res) => {
   } catch (error) {
     console.error('Error al obtener el menú de almuerzo:', error);
     res.status(500).json({ error: 'Error al obtener el menú de almuerzo' });
+  }
+};
+
+// Controlador para subir/actualizar la imagen del almuerzo
+export const uploadLunchImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se ha proporcionado ninguna imagen' });
+    }
+
+    const imageBuffer = req.file.buffer;
+
+    // Verificar si ya existe un registro
+    const [existing] = await db.query('SELECT id FROM almuerzo_diario LIMIT 1');
+
+    if (existing && existing.length > 0) {
+      // Actualizar el registro existente
+      await db.query('UPDATE almuerzo_diario SET almuerzo = ? WHERE id = ?', [imageBuffer, existing[0].id]);
+    } else {
+      // Crear nuevo registro
+      await db.query('INSERT INTO almuerzo_diario (almuerzo) VALUES (?)', [imageBuffer]);
+    }
+
+    res.json({ message: 'Imagen del almuerzo actualizada exitosamente' });
+  } catch (error) {
+    console.error('Error al subir imagen del almuerzo:', error);
+    res.status(500).json({ error: 'Error al subir la imagen del almuerzo' });
   }
 };

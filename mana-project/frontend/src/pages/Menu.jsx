@@ -8,6 +8,8 @@ function Menu() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterTipo, setFilterTipo] = useState("TODOS");
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
@@ -44,6 +46,32 @@ function Menu() {
       maximumFractionDigits: 0
     });
   };
+
+  // Formatear tipo para mostrar con mayúscula inicial y tildes
+  const formatTipo = (tipo) => {
+    const nombres = {
+      'CAFETERIA': 'Cafetería',
+      'DESAYUNO': 'Desayuno',
+      'ALMUERZO': 'Almuerzo',
+      'CENA': 'Cena'
+    };
+    return nombres[tipo] || tipo;
+  };
+
+  // Filtrar items (lógica similar a ClientsMenu)
+  const filteredItems = menuItems.filter((item) => {
+    // Filtrar por categoría (case-insensitive)
+    const categoryMatch = filterTipo === "TODOS" || 
+      item.tipo?.toLowerCase() === filterTipo.toLowerCase();
+    
+    // Filtrar por búsqueda en nombre y descripción
+    const term = searchTerm.toLowerCase();
+    const searchMatch = 
+      item.nombre?.toLowerCase().includes(term) ||
+      (item.descripcion && item.descripcion.toLowerCase().includes(term));
+    
+    return categoryMatch && searchMatch;
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,7 +145,7 @@ function Menu() {
     <div className="min-h-screen bg-[#FDFBF7] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-2">
+        <div className="text-center mb-8">
           <button
             onClick={() => {
               setShowForm(!showForm);
@@ -131,6 +159,50 @@ function Menu() {
             {showForm ? "Cancelar" : "Agregar Nuevo Item"}
           </button>
         </div>
+
+        {/* Barra de búsqueda y filtros */}
+        {!showForm && (
+          <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 border border-[#E8E4D9]">
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Búsqueda */}
+              <div>
+                <label className="block text-sm font-bold text-[#8C705F] uppercase tracking-wider mb-2">
+                  Buscar por nombre
+                </label>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Buscar producto..."
+                  className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
+                />
+              </div>
+
+              {/* Filtro por tipo */}
+              <div>
+                <label className="block text-sm font-bold text-[#8C705F] uppercase tracking-wider mb-2">
+                  Filtrar por categoría
+                </label>
+                <select
+                  value={filterTipo}
+                  onChange={(e) => setFilterTipo(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E8E4D9] rounded-xl focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
+                >
+                  <option value="TODOS">Todos</option>
+                  <option value="CAFETERIA">Cafetería</option>
+                  <option value="DESAYUNO">Desayuno</option>
+                  <option value="ALMUERZO">Almuerzo</option>
+                  <option value="CENA">Cena</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Contador de resultados */}
+            <div className="mt-4 text-center text-sm text-[#8C705F]">
+              Mostrando {filteredItems.length} de {menuItems.length} productos
+            </div>
+          </div>
+        )}
 
         {/* Formulario */}
         {showForm && (
@@ -220,9 +292,15 @@ function Menu() {
               No hay items en el menú todavía
             </p>
           </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-xl text-[#8C705F] font-medium">
+              No se encontraron productos con los filtros seleccionados
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {menuItems.map((item) => {
+            {filteredItems.map((item) => {
               const tipoColors = {
                 CAFETERIA: "bg-amber-100 text-amber-800",
                 DESAYUNO: "bg-orange-100 text-orange-800",
@@ -238,7 +316,7 @@ function Menu() {
                   {/* Badge del tipo */}
                   <div className="mb-3">
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${tipoColors[item.tipo]}`}>
-                      {item.tipo}
+                      {formatTipo(item.tipo)}
                     </span>
                   </div>
 

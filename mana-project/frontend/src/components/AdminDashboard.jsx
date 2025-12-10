@@ -1,28 +1,73 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
-import { Users, Calendar, Coffee, LogOut, TrendingUp, Package } from 'lucide-react';
+import { Calendar, Coffee, LogOut, UtensilsCrossed, Upload, Image, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Menu from '../pages/Menu';
 import AdminReservations from '../pages/Admin_reservations';
 
 const LOGOUT_API_URL = "/api/auth/logout";
+const LUNCH_API_URL = "/api/lunch";
 
 function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalReservations: 0,
-    totalMenuItems: 0,
-  });
+  const [activeTab, setActiveTab] = useState('reservations');
+  const [lunchImage, setLunchImage] = useState(null);
+  const [lunchPreview, setLunchPreview] = useState(null);
+  const [uploadingLunch, setUploadingLunch] = useState(false);
+  const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    setStats({
-      totalUsers: 150,
-      totalReservations: 45,
-      totalMenuItems: 32,
-    });
-  }, []);
+  const handleLunchImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("La imagen no debe superar los 5MB");
+        return;
+      }
+      setLunchImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLunchPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadLunch = async () => {
+    if (!lunchImage) {
+      alert("Selecciona una imagen primero");
+      return;
+    }
+
+    setUploadingLunch(true);
+    try {
+      const formData = new FormData();
+      formData.append('imagen', lunchImage);
+
+      await axios.post(`${LUNCH_API_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+
+      alert("Imagen del almuerzo actualizada exitosamente");
+      setLunchImage(null);
+      setLunchPreview(null);
+    } catch (error) {
+      console.error("Error al subir imagen:", error);
+      alert("Error al subir la imagen del almuerzo");
+    } finally {
+      setUploadingLunch(false);
+    }
+  };
+
+  const clearLunchImage = () => {
+    setLunchImage(null);
+    setLunchPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -65,156 +110,38 @@ function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-2 flex flex-wrap gap-2 mb-8 border border-mana-brown/10">
           <button
-            onClick={() => setActiveTab('overview')}
-            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all ${activeTab === 'overview'
-              ? 'bg-gradient-to-r from-mana-brown to-[#8B6F47] text-white shadow-lg'
-              : 'text-gray-700 hover:bg-mana-cream/50'
-              }`}
-          >
-            Resumen
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all ${activeTab === 'users'
-              ? 'bg-gradient-to-r from-mana-brown to-[#8B6F47] text-white shadow-lg'
-              : 'text-gray-700 hover:bg-mana-cream/50'
-              }`}
-          >
-            Usuarios
-          </button>
-          <button
             onClick={() => setActiveTab('reservations')}
-            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all ${activeTab === 'reservations'
+            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${activeTab === 'reservations'
               ? 'bg-gradient-to-r from-mana-brown to-[#8B6F47] text-white shadow-lg'
               : 'text-gray-700 hover:bg-mana-cream/50'
               }`}
           >
+            <Calendar size={18} />
             Reservaciones
           </button>
           <button
             onClick={() => setActiveTab('menu')}
-            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all ${activeTab === 'menu'
+            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${activeTab === 'menu'
               ? 'bg-gradient-to-r from-mana-brown to-[#8B6F47] text-white shadow-lg'
               : 'text-gray-700 hover:bg-mana-cream/50'
               }`}
           >
+            <Coffee size={18} />
             Menú
+          </button>
+          <button
+            onClick={() => setActiveTab('almuerzo')}
+            className={`flex-1 min-w-32 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${activeTab === 'almuerzo'
+              ? 'bg-gradient-to-r from-mana-brown to-[#8B6F47] text-white shadow-lg'
+              : 'text-gray-700 hover:bg-mana-cream/50'
+              }`}
+          >
+            <UtensilsCrossed size={18} />
+            Almuerzo
           </button>
         </div>
 
         {/* Content */}
-        {activeTab === 'overview' && (
-          <div>
-            <h2 className="text-3xl font-bold text-mana-brown mb-8 flex items-center gap-3">
-              <TrendingUp className="w-8 h-8" />
-              Resumen General
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {/* Card Usuarios */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border-l-4 border-[#8B7355] hover:shadow-2xl transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gradient-to-br from-[#D4C5A9]/40 to-[#C9B99A]/60 p-4 rounded-xl group-hover:scale-110 transition-transform">
-                    <Users className="text-[#8B7355]" size={32} />
-                  </div>
-                </div>
-                <h3 className="text-gray-600 text-sm font-semibold uppercase tracking-wide">
-                  Total Usuarios
-                </h3>
-                <p className="text-4xl font-bold text-mana-brown mt-2">
-                  {stats.totalUsers}
-                </p>
-                <p className="text-xs text-gray-500 mt-2">↑ 12% vs mes anterior</p>
-              </div>
-
-              {/* Card Reservaciones */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border-l-4 border-[#A0826D] hover:shadow-2xl transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gradient-to-br from-[#E8DCC4]/40 to-[#D4C5A9]/60 p-4 rounded-xl group-hover:scale-110 transition-transform">
-                    <Calendar className="text-[#A0826D]" size={32} />
-                  </div>
-                </div>
-                <h3 className="text-gray-600 text-sm font-semibold uppercase tracking-wide">
-                  Reservaciones Activas
-                </h3>
-                <p className="text-4xl font-bold text-mana-brown mt-2">
-                  {stats.totalReservations}
-                </p>
-                <p className="text-xs text-gray-500 mt-2">↑ 8% vs mes anterior</p>
-              </div>
-
-              {/* Card Menú */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border-l-4 border-[#C9A875] hover:shadow-2xl transition-all group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gradient-to-br from-[#FFFDD0]/40 to-[#F5E6C3]/60 p-4 rounded-xl group-hover:scale-110 transition-transform">
-                    <Coffee className="text-[#C9A875]" size={32} />
-                  </div>
-                </div>
-                <h3 className="text-gray-600 text-sm font-semibold uppercase tracking-wide">
-                  Items en Menú
-                </h3>
-                <p className="text-4xl font-bold text-mana-brown mt-2">
-                  {stats.totalMenuItems}
-                </p>
-                <p className="text-xs text-gray-500 mt-2">3 nuevos esta semana</p>
-              </div>
-            </div>
-
-            {/* Actividad Reciente */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-mana-brown/10">
-              <div className="flex items-center gap-3 mb-6">
-                <Package className="w-6 h-6 text-mana-brown" />
-                <h3 className="text-2xl font-bold text-mana-brown">
-                  Actividad Reciente
-                </h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="border-l-4 border-[#8B7355] pl-6 py-3 bg-[#F5F5DC]/20 rounded-r-lg hover:bg-[#F5F5DC]/40 transition-colors">
-                  <p className="font-semibold text-gray-900 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-[#8B7355] rounded-full"></span>
-                    Nuevo usuario registrado
-                  </p>
-                  <p className="text-sm text-gray-600 ml-4 mt-1">Hace 2 horas</p>
-                </div>
-
-                <div className="border-l-4 border-[#A0826D] pl-6 py-3 bg-[#E8DCC4]/20 rounded-r-lg hover:bg-[#E8DCC4]/40 transition-colors">
-                  <p className="font-semibold text-gray-900 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-[#A0826D] rounded-full"></span>
-                    Nueva reservación confirmada
-                  </p>
-                  <p className="text-sm text-gray-600 ml-4 mt-1">Hace 5 horas</p>
-                </div>
-
-                <div className="border-l-4 border-[#C9A875] pl-6 py-3 bg-[#FFFDD0]/20 rounded-r-lg hover:bg-[#FFFDD0]/40 transition-colors">
-                  <p className="font-semibold text-gray-900 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-[#C9A875] rounded-full"></span>
-                    Menú actualizado
-                  </p>
-                  <p className="text-sm text-gray-600 ml-4 mt-1">Hace 1 día</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'users' && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-mana-brown/10">
-            <h2 className="text-3xl font-bold text-mana-brown mb-6 flex items-center gap-3">
-              <Users className="w-8 h-8" />
-              Gestión de Usuarios
-            </h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Aquí podrás ver y gestionar todos los usuarios registrados.
-            </p>
-            <div className="mt-6 p-4 bg-gradient-to-r from-[#FFFDD0]/30 to-[#F5E6C3]/30 rounded-xl border border-[#C9A875]/30">
-              <p className="text-sm text-[#8B6F47] font-medium">
-                🚧 Funcionalidad en desarrollo - Conectar con API de usuarios
-              </p>
-            </div>
-          </div>
-        )}
-
         {activeTab === 'reservations' && (
           <div>
             <h2 className="text-3xl font-bold text-mana-brown mb-6 flex items-center gap-3">
@@ -235,6 +162,103 @@ function AdminDashboard() {
             </h2>
             <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-mana-brown/10">
               <Menu />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'almuerzo' && (
+          <div>
+            <h2 className="text-3xl font-bold text-mana-brown mb-6 flex items-center gap-3">
+              <UtensilsCrossed className="w-8 h-8" />
+              Almuerzo del Día
+            </h2>
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-mana-brown/10">
+              <p className="text-gray-700 mb-6">
+                Sube la imagen del menú del almuerzo diario. Esta imagen se mostrará a los clientes en la sección de almuerzo.
+              </p>
+
+              {/* Área de carga de imagen */}
+              <div className="max-w-xl mx-auto">
+                {/* Input de archivo oculto */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleLunchImageChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+
+                {/* Preview o área de drop */}
+                {lunchPreview ? (
+                  <div className="relative">
+                    <img
+                      src={lunchPreview}
+                      alt="Preview del almuerzo"
+                      className="w-full h-80 object-cover rounded-2xl shadow-lg border-2 border-[#8B7355]"
+                    />
+                    <button
+                      onClick={clearLunchImage}
+                      className="absolute top-3 right-3 bg-white/90 p-2 rounded-full shadow-lg hover:bg-white transition-all"
+                    >
+                      <X size={20} className="text-gray-700" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-3 border-dashed border-[#8B7355]/50 rounded-2xl p-12 text-center cursor-pointer hover:border-[#8B7355] hover:bg-[#FAF9F6] transition-all"
+                  >
+                    <div className="bg-gradient-to-br from-[#D4C5A9]/40 to-[#C9B99A]/60 p-6 rounded-full inline-block mb-4">
+                      <Image size={48} className="text-[#8B7355]" />
+                    </div>
+                    <p className="text-lg font-semibold text-[#6F4E37] mb-2">
+                      Haz clic para seleccionar una imagen
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      PNG, JPG o WEBP (máx. 5MB)
+                    </p>
+                  </div>
+                )}
+
+                {/* Botones de acción */}
+                <div className="flex gap-4 mt-6">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#FAF9F6] text-[#6F4E37] px-6 py-3 rounded-xl hover:bg-[#E8E4D9] transition-all font-semibold border border-[#E8E4D9]"
+                  >
+                    <Upload size={20} />
+                    Seleccionar imagen
+                  </button>
+                  <button
+                    onClick={handleUploadLunch}
+                    disabled={!lunchImage || uploadingLunch}
+                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                      lunchImage && !uploadingLunch
+                        ? 'bg-gradient-to-r from-mana-brown to-[#8B6F47] text-white hover:shadow-lg'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {uploadingLunch ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Subiendo...
+                      </>
+                    ) : (
+                      <>
+                        <UtensilsCrossed size={20} />
+                        Actualizar almuerzo
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Nota informativa */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-[#FFFDD0]/30 to-[#F5E6C3]/30 rounded-xl border border-[#C9A875]/30">
+                  <p className="text-sm text-[#8B6F47]">
+                    <strong>Nota:</strong> La imagen del almuerzo se mostrará en el constructor de almuerzos disponible de 11:45 AM a 3:00 PM.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
