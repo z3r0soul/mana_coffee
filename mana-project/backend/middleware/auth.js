@@ -1,14 +1,22 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import jwt from "jsonwebtoken"; //generar token
+import bcrypt from "bcrypt"; //comparación de contraseñas
+import db from "../config/db.js";
+import dotenv from "dotenv"; //lectura de variables de entorno
 
 dotenv.config();
 
+const password = process.env.ADMIN_HASH;
+const email = process.env.ADMIN_EMAIL;
 const JWT_SECRET = process.env.JWT_SECRET;
-
+/*función exportada para para usarla en otras rutas
+*req : solicitud
+*res : respuesta
+*next : para continuar si no hay problemas
+ */
 export const verificarTokenHTML = (req, res, next) => {
   // recoge el token jwt primero
   let token = req.cookies.acces_token;
-  
+
   // Si no está en cookies, buscar en el header Authorization
   if (!token) {
     const authHeader = req.headers.authorization;
@@ -16,10 +24,10 @@ export const verificarTokenHTML = (req, res, next) => {
       token = authHeader.substring(7);
     }
   }
-  
+
   if (!token) {
     alert('No has iniciado sesion. Redirigiendo a inicio');
-    return res.json({success: false, redirect: "/"})
+    return res.json({ success: false, redirect: "/" })
 
   }
 
@@ -29,7 +37,7 @@ export const verificarTokenHTML = (req, res, next) => {
     next();
   } catch (error) {
     console.error(' Token inválido, redirigiendo a login');
-    return res.json({success: false, redirect: "/"})
+    return res.json({ success: false, redirect: "/" })
 
   }
 };
@@ -39,7 +47,7 @@ export const verificarTokenHTML = (req, res, next) => {
 export const verificarToken = (req, res, next) => {
 
   let token = req.cookies.token;
-  
+
 
   if (!token) {
     const authHeader = req.headers.authorization;
@@ -47,7 +55,7 @@ export const verificarToken = (req, res, next) => {
       token = authHeader.substring(7);
     }
   }
-  
+
   if (!token) {
     console.log(' No se encontró token en cookies ni en Authorization header');
     return res.status(401).json({ error: "Acceso no autorizado" });
@@ -64,3 +72,40 @@ export const verificarToken = (req, res, next) => {
   }
 };
 
+
+export const verificarAdmin = async (req, res, next) => {
+  try {
+    if (!req.usuario || !req.usuario.email) {
+      console.log(' No hay una sesion activa');
+      return res.json({ success: false, redirect: "/" })
+    }
+
+    if (!email.includes(req.usuario.email)) {
+
+      return res.json({ success: false, redirect: "/" })
+    }
+
+    const [rows] = await db.query(
+      "SELECT Contrasena FROM Cliente WHERE cliente_id = ?",
+      [req.usuario.id]
+    );
+
+    if (rows.length === 0) {
+      console.log('Usuario no encontrado en BD');
+      return res.json({ success: false, redirect: "/" })
+    }
+
+    const match = await bcrypt.compare(password, rows[0].Contrasena);
+    if (!match) {
+
+      return res.json({ success: false, redirect: "/" })
+    }
+
+
+    next();
+  } catch (error) {
+
+    console.error('Error en verificarAdmin:', error);
+    return res.json({ success: false, redirect: "/" })
+  }
+};
