@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Users, Calendar, Coffee, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Menu from '../pages/Menu';
+import AdminReservations from '../pages/Admin_reservations';
 const LOGOUT_API_URL = "http://localhost:4000/api/auth/logout";
 
 function AdminDashboard() {
@@ -198,16 +199,11 @@ function AdminDashboard() {
         )}
 
         {activeTab === 'reservations' && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Gestión de Reservaciones
             </h2>
-            <p className="text-gray-600">
-              Aquí podrás ver y gestionar todas las reservaciones.
-            </p>
-            <div className="mt-4 text-sm text-amber-600">
-              Funcionalidad en desarrollo - conectar con API de reservaciones
-            </div>
+            <AdminReservations />
           </div>
         )}
 

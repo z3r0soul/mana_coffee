@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import Us from './pages/Us';
 import Locations from './pages/Locations';
+import Reservations from './pages/Reservations';
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +27,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/Us" element={<Us />} />
         <Route path="/locations" element={<Locations />} />
+        <Route path="/reservations" element={<Reservations />} />
       </Routes>
     </BrowserRouter>
   );
