@@ -2,7 +2,6 @@ import { BrowserRouter } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Menu from './pages/Menu';
 import LunchBuilder from './pages/LunchBuilder';
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -13,7 +12,6 @@ import Locations from './pages/Locations';
 import ClientsMenu from './pages/ClientsMenu';
 
 import Reservations from './pages/Reservations';
-import ClientsMenu from './pages/ClientsMenu';
 function App() {
   return (
     <BrowserRouter>

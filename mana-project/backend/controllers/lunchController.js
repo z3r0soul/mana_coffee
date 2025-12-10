@@ -1,4 +1,4 @@
-import db from '../db.js';
+import db from '../config/db.js';
 
 // Controlador para obtener el menú de almuerzo del día
 export const getLunchMenu = async (req, res) => {

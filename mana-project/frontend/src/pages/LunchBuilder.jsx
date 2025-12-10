@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Check, Clock, AlertCircle, ShoppingCart, Coffee, Soup, X } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 import imgTest from '../assets/FOTO3.jpeg';
@@ -15,8 +15,8 @@ function LunchBuilder() {
         const minutes = now.getMinutes();
         const currentTime = hours * 60 + minutes; // Convertir a minutos desde medianoche
 
-        const startTime = 11 * 60 + 45; // 11:45 AM
-        const endTime = 15 * 60; // 3:00 PM
+        const startTime = 11 * 60 + 45; // 0 11*60
+        const endTime = 15 * 60; // 24*60 
 
         return currentTime >= startTime && currentTime <= endTime;
     };
