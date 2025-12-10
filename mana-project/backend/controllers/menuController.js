@@ -103,7 +103,7 @@ export const updateMenuItem = async (req, res) => {
   }
 };
 
-// Eliminar un item (soft delete)
+// Eliminar un item 
 export const deleteMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -112,17 +112,6 @@ export const deleteMenuItem = async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ error: "Item no encontrado" });
     }
-
-    // Soft delete (o hard delete depende de lo que se quiera, aqui hacemos update)
-    // Nota: El original tenia 'activo', pero en la DB no vimos 'activo'. 
-    // Si falla delete es porque falta esa columna, pero el usuario se queja de CREATE.
-    // Dejaré esto como estaba en original salvo imagen.
-
-    // IMPORTANTE: Si la tabla no tiene 'activo', esto fallará. 
-    // Pero el usuario dijo "error al crear".
-    // Asumiré que soft delete puede fallar si no existe campo, pero create es la prioridad.
-    // Revisando cafe.sql, la tabla menu NO TIENE campo 'activo'. 
-    // Cambiaré a HARD DELETE para evitar líos, ya que la tabla es simple.
 
     await db.query("DELETE FROM menu WHERE id = ?", [id]);
 

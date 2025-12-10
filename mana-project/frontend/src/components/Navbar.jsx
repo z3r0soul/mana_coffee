@@ -20,10 +20,15 @@ function Navbar() {
 
     const isActive = (path) => location.pathname === path;
 
-    // Detectar páginas específicas para forzar el fondo sólido
+    // --- LÓGICA DE FONDO SÓLIDO ---
+    // 1. Detectar si es página de admin
     const isAdminPage = location.pathname.startsWith('/admin');
+    // 2. Detectar si es página de reservas
     const isReservationsPage = location.pathname === '/reservations';
+    // 3. Detectar si es Arma tu Almuerzo
     const isLunchPage = location.pathname === '/LunchBuilder';
+    // 4. Detectar si es Login o Registro (NUEVO)
+    const isAuthPage = ['/login', '/register'].includes(location.pathname);
 
     // Detectar scroll para cambiar el fondo de la navbar
     useEffect(() => {
@@ -41,8 +46,8 @@ function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // 
-    const shouldHaveSolidBackground = isScrolled || isAdminPage || isReservationsPage || isLunchPage;
+    // Determinar si la barra debe tener fondo sólido
+    const shouldHaveSolidBackground = isScrolled || isAdminPage || isReservationsPage || isLunchPage || isAuthPage;
 
     const handleLinkClick = () => {
         setIsOpen(false);
@@ -80,10 +85,6 @@ function Navbar() {
                             </button>
 
                             <Link to="/" className="flex items-center gap-3 group">
-                                {/* MODIFICACIÓN AQUÍ: 
-                                    Cuando la barra es transparente, usamos bg-[#6F4E37] (café) 
-                                    en lugar de bg-white/90.
-                                */}
                                 <img
                                     src={ManaLogo}
                                     alt="Mana Logo"
@@ -91,7 +92,7 @@ function Navbar() {
                                         w-14 h-14 md:w-16 md:h-16 object-contain rounded-full transition-all
                                         ${shouldHaveSolidBackground
                                             ? 'bg-transparent' // Sin fondo si la barra ya es café
-                                            : 'bg-[#6F4E37] shadow-lg p-1' // Fondo café circular con sombra y un pequeño padding
+                                            : 'bg-[#6F4E37] shadow-lg p-1' // Fondo café circular con sombra en transparente
                                         }
                                     `}
                                 />
@@ -121,10 +122,10 @@ function Navbar() {
                                         ${isActive(link.path)
                                             ? shouldHaveSolidBackground
                                                 ? 'bg-white/20 text-white'
-                                                : 'bg-[#6F4E37] text-white shadow-md' // Activo en transparente: fondo café
+                                                : 'bg-[#6F4E37] text-white shadow-md'
                                             : shouldHaveSolidBackground
                                                 ? 'text-white/80 hover:bg-white/10 hover:text-white'
-                                                : 'text-white/90 hover:bg-[#6F4E37]/80 hover:text-white' // Hover en transparente
+                                                : 'text-white/90 hover:bg-[#6F4E37]/80 hover:text-white'
                                         }
                                     `}
                                 >

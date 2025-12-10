@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Coffee, Utensils, Croissant, Loader2, Moon } from 'lucide-react';
+import { Coffee, Utensils, Croissant, Loader2, Moon, Search } from 'lucide-react';
 import ClientMenuCard from '../components/ClientMenuCard';
 
 const ClientsMenu = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('todos');
+    const [searchTerm, setSearchTerm] = useState("");
 
-    // Categorías definidas con sus iconos y etiquetas
     const categories = [
         { id: 'todos', label: 'Todos', icon: Utensils },
         { id: 'desayuno', label: 'Desayunos', icon: Coffee },
@@ -32,15 +32,16 @@ const ClientsMenu = () => {
         fetchMenu();
     }, []);
 
-    // Función para obtener items filtrados según la categoría activa
     const getFilteredItems = () => {
-        if (activeCategory === 'todos') {
-            return menuItems;
-        }
+        return menuItems.filter(item => {
+            const categoryMatch = activeCategory === 'todos' || item.tipo?.toLowerCase() === activeCategory.toLowerCase();
+            const term = searchTerm.toLowerCase();
+            const searchMatch =
+                item.nombre.toLowerCase().includes(term) ||
+                (item.descripcion && item.descripcion.toLowerCase().includes(term));
 
-        return menuItems.filter(item =>
-            item.tipo?.toLowerCase() === activeCategory.toLowerCase()
-        );
+            return categoryMatch && searchMatch;
+        });
     };
 
     const filteredItems = getFilteredItems();
@@ -48,7 +49,10 @@ const ClientsMenu = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex justify-center items-center bg-[#FAFAFA]">
-                <Loader2 className="w-12 h-12 text-mana-brown animate-spin" />
+                <div className="text-center">
+                    <Loader2 className="w-12 h-12 text-[#8C705F] animate-spin mx-auto mb-4" />
+                    <p className="text-[#6B5D4D]">Cargando delicias...</p>
+                </div>
             </div>
         );
     }
@@ -64,10 +68,12 @@ const ClientsMenu = () => {
                 </p>
             </div>
 
-            {/* Navegación de Categorías */}
-            <div className="sticky top-0 z-30 bg-white shadow-md py-4">
+            {/* Navegación y Búsqueda) */}
+            <div className="bg-white/95 backdrop-blur-sm shadow-md py-6">
                 <div className="container mx-auto px-4">
-                    <div className="flex justify-center gap-4 md:gap-6 overflow-x-auto pb-2 scrollbar-hide">
+
+                    {/* 1. Categorías */}
+                    <div className="flex justify-center gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide">
                         {categories.map((cat) => {
                             const Icon = cat.icon;
                             const isActive = activeCategory === cat.id;
@@ -75,29 +81,55 @@ const ClientsMenu = () => {
                             return (
                                 <button
                                     key={cat.id}
-                                    onClick={() => setActiveCategory(cat.id)}
-                                    className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl min-w-[100px] transition-all duration-300 transform hover:scale-105 ${isActive
-                                        ? 'bg-mana-brown text-white shadow-lg'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-mana-cream'
+                                    onClick={() => {
+                                        setActiveCategory(cat.id);
+                                        setSearchTerm("");
+                                    }}
+                                    className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl min-w-[90px] transition-all duration-300 transform hover:scale-105 ${isActive
+                                        ? 'bg-[#8C705F] text-white shadow-lg scale-105'
+                                        : 'bg-gray-100 text-gray-500 hover:bg-[#F0EBE0] hover:text-[#6B5D4D]'
                                         }`}
                                 >
-                                    <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
-                                    <span className="text-sm font-semibold whitespace-nowrap">
+                                    <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                                    <span className="text-xs font-semibold whitespace-nowrap">
                                         {cat.label}
                                     </span>
                                 </button>
                             );
                         })}
                     </div>
+
+                    {/* 2. Barra de Búsqueda */}
+                    <div className="max-w-md mx-auto mt-4 relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-[#8C705F]" />
+                        </div>
+                        <input
+                            type="text"
+                            className="block w-full pl-10 pr-3 py-3 border border-[#E8E4D9] rounded-full leading-5 bg-[#FAF9F6] placeholder-[#9A8C7D] focus:outline-none focus:placeholder-gray-400 focus:border-[#8B7355] focus:ring-1 focus:ring-[#8B7355] transition duration-150 ease-in-out shadow-sm text-[#4A4036]"
+                            placeholder="Buscar plato, ingrediente..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={() => setSearchTerm("")}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
                 </div>
             </div>
 
             {/* Contador de resultados */}
             <div className="container mx-auto px-4 mt-6">
-                <p className="text-gray-600 text-center">
-                    Mostrando <span className="font-bold text-mana-brown">{filteredItems.length}</span> {filteredItems.length === 1 ? 'producto' : 'productos'}
+                <p className="text-[#6B5D4D] text-center text-sm">
+                    Mostrando <span className="font-bold text-[#8C705F]">{filteredItems.length}</span> {filteredItems.length === 1 ? 'producto' : 'productos'}
                     {activeCategory !== 'todos' && (
-                        <span> en <span className="font-semibold text-mana-gold">
+                        <span> en <span className="font-semibold text-[#8B7355]">
                             {categories.find(c => c.id === activeCategory)?.label}
                         </span></span>
                     )}
@@ -105,14 +137,13 @@ const ClientsMenu = () => {
             </div>
 
             {/* Sección con Fondo de Collage */}
-            <div className="relative mt-8 pb-20">
+            <div className="relative mt-6 pb-20">
                 {/* Fondo con la foto del collage */}
                 <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 pointer-events-none"
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 pointer-events-none fixed-bg"
                     style={{ backgroundImage: "url('/src/assets/collage/collage.jpg')" }}
                 >
-                    {/* Overlay para suavizar la imagen */}
-                    <div className="absolute inset-0 bg-black/10"></div>
+                    <div className="absolute inset-0 bg-white/40"></div>
                 </div>
 
                 {/* Grid de Productos */}
@@ -130,18 +161,24 @@ const ClientsMenu = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-20">
-                            <p className="text-xl text-gray-600 mb-2">
-                                No hay productos en esta categoría
+                        <div className="text-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl mx-4 border border-[#E8E4D9]">
+                            <div className="w-16 h-16 bg-[#F0EBE0] rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Search className="w-8 h-8 text-[#8C705F]" />
+                            </div>
+                            <p className="text-xl text-[#6B5D4D] mb-2 font-medium">
+                                No encontramos "{searchTerm}"
                             </p>
-                            <p className="text-gray-500">
-                                Intenta con otra categoría
+                            <p className="text-[#9A8C7D] text-sm">
+                                Intenta con otra palabra o cambia de categoría.
                             </p>
                             <button
-                                onClick={() => setActiveCategory('todos')}
-                                className="mt-6 bg-mana-brown text-white px-6 py-3 rounded-lg hover:bg-mana-gold transition-colors"
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    setActiveCategory('todos');
+                                }}
+                                className="mt-6 bg-[#8C705F] text-white px-6 py-2.5 rounded-full hover:bg-[#6F4E37] transition-all shadow-md active:scale-95 text-sm font-bold"
                             >
-                                Ver todos los productos
+                                Ver todo el menú
                             </button>
                         </div>
                     )}

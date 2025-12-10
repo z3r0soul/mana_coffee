@@ -26,11 +26,11 @@ function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      await axios.post(LOGOUT_API_URL, {}, {
-        withCredentials: true,
+      await axios.post(LOGOUT_API_URL, {}, { //axios post envia la petición al backend
+        withCredentials: true, //envia las cookies con la petición
       });
       alert("Sesión cerrada");
-      navigate("/");
+      navigate("/"); //reenvio al usuario a la pagina de inicio
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }

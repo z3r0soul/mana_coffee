@@ -56,19 +56,17 @@ function Locations() {
     };
 
     return (
-        // FONDO PRINCIPAL: #FDFBF7 
         <div className="min-h-screen bg-[#FDFBF7]">
 
             {/* Hero Section */}
-            {/* FONDO HERO: #4A4036 */}
             <section className="relative bg-[#4A4036]/95 text-white py-20 md:py-24 pt-32">
                 <div className="container-custom text-center px-4">
-                    <MapPin className="w-16 h-16 mx-auto mb-4 animate-bounce text-mana-cream" />
+                    <MapPin className="w-16 h-16 mx-auto mb-4 animate-bounce text-[#FDFBF7]" />
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[#FDFBF7]">
                         Encuéntranos
                     </h1>
                     <p className="text-lg md:text-xl text-[#E8E4D9] max-w-2xl mx-auto">
-                        Te esperamos con los brazos abiertos y la mejor <span className="font-bold text-mana-gold italic">sazón natural</span>
+                        Te esperamos con los brazos abiertos y la mejor <span className="font-bold text-[#8B7355] italic">sazón natural</span>
                     </p>
                 </div>
             </section>
@@ -116,7 +114,13 @@ function Locations() {
 
                                     <p className="text-[#6B5D4D] flex items-center gap-2">
                                         <Phone className="w-5 h-5 text-[#8B7355]" />
-                                        <a href={SOCIAL_MEDIA.whatsapp} className="hover:text-[#8B7355] transition-colors">
+                                        {/* */}
+                                        <a
+                                            href={SOCIAL_MEDIA.whatsapp}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hover:text-[#8B7355] transition-colors"
+                                        >
                                             {RESTAURANT_INFO.phone}
                                         </a>
                                     </p>
