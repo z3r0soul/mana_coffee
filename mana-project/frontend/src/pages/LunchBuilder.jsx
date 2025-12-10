@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Clock, AlertCircle, ShoppingCart, Coffee, Soup, X } from 'lucide-react';
+import { Check, Clock, AlertCircle, ShoppingCart, Coffee, Soup } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 import imgTest from '../assets/FOTO3.jpeg';
 
@@ -196,18 +196,18 @@ Confirmaré 2 horas antes de la entrega.
                         {/* COLUMNA IZQUIERDA: Formulario de selección */}
                         <div className="lg:col-span-2 space-y-8">
 
-                            {/* Alerta de horario (Si está fuera de hora) */}
+                            {/* Alerta de horario */}
                             {!isWithinOrderTime() && (
-                                <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 shadow-lg animate-pulse">
+                                <div className="bg-red-50 border-2 border-red-300 rounded-xl p-6 shadow-lg">
                                     <div className="flex items-start gap-4">
                                         <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                                             <AlertCircle className="text-red-600" size={24} />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-red-800 mb-1">
+                                            <h3 className="text-lg font-bold text-red-800 mb-2">
                                                 Fuera de Horario de Pedidos
                                             </h3>
-                                            <p className="text-red-700 text-sm">
+                                            <p className="text-red-700">
                                                 Los pedidos de almuerzo solo están disponibles de <strong>11:45 AM a 3:00 PM</strong>.
                                             </p>
                                         </div>
@@ -216,29 +216,23 @@ Confirmaré 2 horas antes de la entrega.
                             )}
 
                             {/* Imagen del día */}
-                            <div className="bg-white rounded-3xl overflow-hidden shadow-lg border border-[#E8E4D9] group">
-                                <div className="relative overflow-hidden">
-                                    <img
-                                        src={dailyMenu.imageUrl}
-                                        alt="Almuerzo del día"
-                                        onClick={() => setShowImageModal(true)}
-                                        className="w-full h-96 object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
-                                    <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full pointer-events-none">
-                                        Clic para ampliar
-                                    </div>
-                                </div>
+                            <div className="bg-white rounded-3xl overflow-hidden shadow-lg border border-[#E8E4D9]">
+                                <img
+                                    src={dailyMenu.imageUrl}
+                                    alt="Almuerzo del día"
+                                    className="w-full h-128 object-cover"
+                                />
                                 <div className="p-6 bg-white">
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <h3 className="text-2xl font-bold text-[#6F4E37]">
-                                                Menú Ejecutivo del Día
+                                                Menú Ejecutivo
                                             </h3>
-                                            <p className="text-[#8C705F]">Precio base</p>
+                                            <p className="text-[#8C705F]">Sazón casera y natural</p>
                                         </div>
                                         <div className="text-right">
-                                            <span className="font-bold text-[#8B7355] text-3xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
+                                            <p className="text-sm text-[#9A8C7D]">Precio base</p>
+                                            <span className="font-bold text-[#8B7355] text-2xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -443,9 +437,9 @@ Confirmaré 2 horas antes de la entrega.
                                 {/* Botón Acción */}
                                 <button
                                     onClick={sendOrder}
-                                    disabled={!isFormValid() || !isWithinOrderTime()}
-                                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-md ${isFormValid() && isWithinOrderTime()
-                                        ? 'bg-green-600 text-white hover:bg-green-700 active:scale-95'
+                                    disabled={!isFormValid()}
+                                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-md ${isFormValid()
+                                        ? 'bg-[#8B7355] text-white hover:bg-[#6F5B43] active:scale-95'
                                         : 'bg-[#E8E4D9] text-[#9A8C7D] cursor-not-allowed'
                                         }`}
                                 >
@@ -459,12 +453,6 @@ Confirmaré 2 horas antes de la entrega.
                                     </p>
                                 </div>
 
-                                {!isWithinOrderTime() && (
-                                    <p className="text-xs text-red-500 text-center mt-3 font-medium">
-                                        Horario de pedidos: 11:45 AM - 3:00 PM
-                                    </p>
-                                )}
-
                             </div>
                         </div>
 
@@ -475,20 +463,20 @@ Confirmaré 2 horas antes de la entrega.
             {/* Modal de Imagen Completa */}
             {showImageModal && (
                 <div
-                    className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in"
+                    className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
                     onClick={() => setShowImageModal(false)}
                 >
                     <div className="relative max-w-4xl w-full">
                         <button
                             onClick={() => setShowImageModal(false)}
-                            className="absolute -top-12 right-0 text-white hover:text-[#8B7355] transition-colors flex items-center gap-2 font-bold"
+                            className="absolute -top-12 right-0 text-white hover:text-gray-300 text-lg font-bold"
                         >
-                            <X size={24} /> Cerrar
+                            ✕ Cerrar
                         </button>
                         <img
                             src={dailyMenu.imageUrl}
                             alt="Almuerzo del día - Vista completa"
-                            className="w-full h-auto rounded-xl shadow-2xl border-4 border-white/10"
+                            className="w-full h-auto rounded-lg shadow-2xl"
                             onClick={(e) => e.stopPropagation()}
                         />
                     </div>
