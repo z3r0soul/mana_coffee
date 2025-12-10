@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import Us from './pages/Us';
 import Locations from './pages/Locations';
+import ClientsMenu from './pages/ClientsMenu';
+
 import Reservations from './pages/Reservations';
 import ClientsMenu from './pages/ClientsMenu';
 function App() {
@@ -20,8 +22,7 @@ function App() {
         <Route path="/" element={<Home />} /> {/* Home */}
         <Route path="/LunchBuilder" element={<LunchBuilder />} />
         {/* <Route path="/LunchBuilder" element={<LunchBuilder />} /> */}
-        <Route path="/" element={<Home />} />
-        <Route path="/menu" element={<ClientsMenu />} />
+        <Route path="/ClientsMenu" element={<ClientsMenu />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
