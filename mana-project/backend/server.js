@@ -4,6 +4,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import menuRoutes from "./routes/menu.js";
 import authRoutes from "./routes/auth.js";
+import reservationRoutes from "./routes/reservations.js";
 
 const app = express();
 const PORT = 4000;
@@ -23,6 +24,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // Rutas
 app.use("/api/menu", menuRoutes); // Rutas de admin (CRUD)
 app.use("/api/auth", authRoutes);
+app.use("/api/reservations", reservationRoutes);
 // Ruta de prueba
 app.get("/", (req, res) => {
   res.json({ mensaje: "API de Mana Coffee funcionando correctamente" });
