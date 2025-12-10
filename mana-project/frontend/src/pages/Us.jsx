@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
+import videobanner from '../assets/videos/videobanner1.mp4';
+import videobanner2 from '../assets/videos/Videobanner2.mp4';
+import videoCompromiso from '../assets/videos/video-compromiso.mp4';
+import videoExperiencia from '../assets/videos/video-experiencia.mp4';
 
 function About() {
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -9,37 +13,30 @@ function About() {
         {
             id: 0,
             title: "NUESTRA HISTORIA",
-            videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-food-being-cooked-in-a-professional-kitchen-46551-large.mp4",
+            videoUrl: videobanner,
             description: "Desde enero 2025, Mana nace de una pasión familiar por la comida casera y el servicio personalizado.",
             details: "11 meses compartiendo nuestra sazón natural con la comunidad. Más de 700 hamburguesas vendidas en Burger Show. Una familia de 3 socios comprometidos con la excelencia."
         },
         {
             id: 1,
             title: "NUESTRA FILOSOFÍA",
-            videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-chef-cutting-vegetables-42551-large.mp4",
+            videoUrl: videoCompromiso,
             description: "Ingredientes frescos, preparación artesanal y un toque de amor en cada plato.",
             details: "Creemos en la comida del hogar, sin exceso de condimentos. Trabajamos con proveedores de confianza como Bimbo y La Duquesa para garantizar la frescura de cada ingrediente."
         },
         {
             id: 2,
             title: "NUESTRO EQUIPO",
-            videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-food-in-a-restaurant-kitchen-43312-large.mp4",
+            videoUrl: videobanner2,
             description: "Chefs especializados y personal capacitado que aman lo que hacen.",
             details: "Cada miembro de nuestro equipo está comprometido con brindarte una experiencia gastronómica memorable. Profesionales apasionados por la cocina y el servicio."
         },
         {
             id: 3,
             title: "NUESTRA COMUNIDAD",
-            videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-people-eating-at-a-restaurant-4254-large.mp4",
+            videoUrl: videoExperiencia,
             description: "Más que un restaurante, somos un espacio de encuentro y celebración.",
             details: "Capacidad para 35-40 personas. Eventos especiales, cumpleaños y cenas de grado. Un lugar donde cada momento se convierte en un recuerdo especial."
-        },
-        {
-            id: 4,
-            title: "NUESTRO COMPROMISO",
-            videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-chef-cooking-4253-large.mp4",
-            description: "Calidad, frescura y servicio personalizado en cada experiencia.",
-            details: "Nos comprometemos a ofrecer siempre lo mejor. Menús actualizados diariamente, atención personalizada y un ambiente acogedor que te hace sentir como en casa."
         }
     ];
 
@@ -220,13 +217,13 @@ function About() {
             </div>
             {/* Estilos para ocultar scrollbar */}
             <style>{`
-                .scrollbar-hide::-webkit-scrollbar {
-                    display: none;
-                }
-                .scrollbar-hide {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
+            .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+            }
+            .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            }
             `}</style>
         </div>
     );

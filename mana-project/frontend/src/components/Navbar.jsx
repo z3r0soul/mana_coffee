@@ -22,7 +22,7 @@ function Navbar() {
     return (
         <>
             {/* Navbar */}
-            <nav className="bg-mana-brown/95 shadow-md sticky top-0 z-40 py-3">
+            <nav className="bg-[#6F4E37]/95 shadow-md sticky top-0 z-40 py-3">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex items-center justify-between h-20">
                         {/* Lado Izquierdo */}

@@ -14,7 +14,7 @@ Además agregamos propiedades y estilos globales para todo el HTML*/
 
   /*Establecemos la fuente global para todo el body del HTML*/
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
       sans-serif;
     /*Aquí defginimos el orden de preferencia de las fuentes que utilizará todo el body

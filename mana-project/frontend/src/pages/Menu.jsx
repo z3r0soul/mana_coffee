@@ -53,11 +53,11 @@ function Menu() {
           "Content-Type": "application/json",
         },
       });
-      
+
       // Limpiar formulario
       setFormData({ nombre: "", descripcion: "", precio: "", tipo: "CAFETERIA" });
       setShowForm(false);
-      
+
       // Recargar menú
       fetchMenuItems();
       alert("Item agregado exitosamente");
@@ -196,7 +196,7 @@ function Menu() {
                 ALMUERZO: "bg-green-100 text-green-800",
                 CENA: "bg-purple-100 text-purple-800"
               };
-              
+
               return (
                 <div
                   key={item.id}

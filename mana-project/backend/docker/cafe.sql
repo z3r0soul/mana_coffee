@@ -39,11 +39,6 @@ CREATE TABLE `Cliente` (
 
 --
 -- Volcado de datos para la tabla `Cliente`
---
-
-INSERT INTO `Cliente` (`cliente_id`, `Nombre`, `Apellido`, `Telefono`, `Email`, `Direccion`, `Contrasena`) VALUES
-(1, 'admin', 'admin', '0000000000', 'mana@gmail.com', NULL, '$2b$10$HV0CEYMt55903mfwFWGrReCEhve9ZTbUmAvWj8tam2vryaTULPE5S'),
-(2, 'laura santiago', 'moreno vargas', '0000000000', 'pene@umail.com', NULL, '$2b$10$uPHGVVtH67FoECMArqJhG.SaCoY7FB70kma.Eh7Q1NN7uSCHvrCNK');
 
 -- --------------------------------------------------------
 
@@ -62,10 +57,6 @@ CREATE TABLE `menu` (
 
 --
 -- Volcado de datos para la tabla `menu`
---
-
-INSERT INTO `menu` (`id`, `nombre`, `descripcion`, `precio`, `fecha`, `tipo`) VALUES
-(2, 'Coma melda vargas', 'caca', 10000.00, '2025-12-09 18:26:44', 'CAFETERIA');
 
 --
 -- Índices para tablas volcadas

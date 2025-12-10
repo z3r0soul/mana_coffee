@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Rutas
-app.use("/api/menu", menuRoutes);
+app.use("/api/menu", menuRoutes); // Rutas de admin (CRUD)
 app.use("/api/auth", authRoutes);
 // Ruta de prueba
 app.get("/", (req, res) => {

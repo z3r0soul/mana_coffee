@@ -16,7 +16,7 @@ function UserMenu() {
     useEffect(() => {
         loadUser();
     }, [location.pathname]);
-    
+
     const loadUser = () => {
         // Intentamos obtener las credenciales desde el endpoint protegido.
         // El backend aplica `verificarToken` y responderá 401 si no hay sesión válida.
@@ -30,7 +30,7 @@ function UserMenu() {
                 if (resp.ok) {
                     const data = await resp.json();
                     setUser(data);
-                    try { localStorage.setItem('user', JSON.stringify(data)); } catch(e) {}
+                    try { localStorage.setItem('user', JSON.stringify(data)); } catch (e) { }
                 } else {
                     // No autenticado o error -> limpiar
                     setUser(null);
@@ -78,7 +78,7 @@ function UserMenu() {
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         }
-        
+
     };
 
     return (
@@ -99,16 +99,16 @@ function UserMenu() {
                 >
                     <div className="w-10 h-10 bg-[#F5F5DC]/75 rounded-full flex items-center justify-center">
                         {user ? (
-                            <span className="text-mana-brown font-bold text-lg">
+                            <span className="text-[#4E2A1E] font-bold text-lg">
                                 {user.nombre?.charAt(0).toUpperCase() || 'U'}
                             </span>
                         ) : (
-                            <User className="text-mana-brown" size={20} />
+                            <User className="text-[#D4A056]" size={20} />
                         )}
                     </div>
 
                     {user && (
-                        <span className="hidden md:block text-mana-brown font-medium">
+                        <span className="hidden md:block text-mana-gold font-medium">
                             {user.nombre}
                         </span>
                     )}

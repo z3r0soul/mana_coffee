@@ -119,7 +119,7 @@ function Home() {
                 </div>
             </section>
             {/* Sobre Nosotros */}
-            <section className="py-20 bg-mana-cream/60">
+            <section className="py-20 bg-[#F3E6D9]">
                 <div className="container-custom flex flex-col lg:flex-row items-center gap-12">
 
                     {/* Imagen */}
@@ -174,7 +174,7 @@ function Home() {
 
                     <div className="flex flex-row justify-center gap-6 max-w-4xl mx-auto">
                         {/* Información */}
-                        <div className="bg-gradient-to-br from-mana-gold to-mana-gold w-full rounded-2xl p-8 text-center md:text-left shadow-xl border border-white/20">
+                        <div className="bg-[#F3E6D9] w-full rounded-2xl p-8 text-center md:text-left shadow-xl border border-white/20">
 
                             <h3 className="text-2xl font-bold text-mana-brown mb-6">
                                 Información
@@ -232,7 +232,7 @@ function Home() {
 
 
                         {/* Redes */}
-                        <div className="bg-gradient-to-br from-mana-brown to-mana-brown/60 rounded-2xl p-8 text-white text-center md:text-left shadow-lg">
+                        <div className="bg-[#8A5A3A]/75 rounded-2xl p-8 text-white text-center md:text-left shadow-lg">
                             <h3 className="text-2xl font-bold mb-4">Síguenos</h3>
                             <p className="mb-6 text-white/90">
                                 Mantente al día con promociones y contenido especial
@@ -288,7 +288,7 @@ function Home() {
             </section>
 
             {/* CTA Final */}
-            <section className="py-16 bg-mana-brown text-white text-center">
+            <section className="py-10 bg-mana-brown text-white text-center">
                 <div className="container-custom">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
                         ¿Listo para Visitarnos?
