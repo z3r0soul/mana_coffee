@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Plus, Check } from 'lucide-react';
+import { Plus, Check, Clock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
-const ClientMenuCard = ({ item }) => {
+const ClientMenuCard = ({ item, isAvailable = true, closedMessage = '' }) => {
     const { addToCart } = useCart();
     const [added, setAdded] = useState(false);
 
     const handleAddToCart = () => {
+        if (!isAvailable) return;
+        
         addToCart(item);
         setAdded(true);
         
@@ -17,14 +19,14 @@ const ClientMenuCard = ({ item }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
+        <div className={`bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group ${!isAvailable ? 'opacity-75' : ''}`}>
             {/* Imagen */}
             <div className="relative h-56 bg-gradient-to-br from-mana-cream to-mana-gold overflow-hidden">
                 {item.imagen ? (
                     <img
                         src={item.imagen}
                         alt={item.nombre}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className={`w-full h-full object-cover transition-transform duration-500 ${isAvailable ? 'group-hover:scale-110' : 'grayscale'}`}
                         loading="lazy"
                         onError={(e) => {
                             // Si la imagen falla al cargar, no mostrar nada especial
@@ -32,13 +34,13 @@ const ClientMenuCard = ({ item }) => {
                         }}
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className={`w-full h-full flex items-center justify-center ${!isAvailable ? 'grayscale' : ''}`}>
                         <div className="text-6xl opacity-30">
-                            {item.tipo === 'desayuno' && '🍳'}
-                            {item.tipo === 'almuerzo' && '🍽️'}
-                            {item.tipo === 'cena' && '🌙'}
-                            {item.tipo === 'cafeteria' && '☕'}
-                            {!['desayuno', 'almuerzo', 'cena', 'cafeteria'].includes(item.tipo) && '🍴'}
+                            {item.tipo?.toLowerCase() === 'desayuno' && '🍳'}
+                            {item.tipo?.toLowerCase() === 'almuerzo' && '🍽️'}
+                            {item.tipo?.toLowerCase() === 'cena' && '🌙'}
+                            {item.tipo?.toLowerCase() === 'cafeteria' && '☕'}
+                            {!['desayuno', 'almuerzo', 'cena', 'cafeteria'].includes(item.tipo?.toLowerCase()) && '🍴'}
                         </div>
                     </div>
                 )}
@@ -49,6 +51,16 @@ const ClientMenuCard = ({ item }) => {
                         {item.tipo}
                     </span>
                 </div>
+
+                {/* Overlay de no disponible */}
+                {!isAvailable && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <div className="bg-white/95 px-4 py-2 rounded-full flex items-center gap-2">
+                            <Clock size={16} className="text-red-500" />
+                            <span className="text-sm font-semibold text-gray-700">No disponible</span>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Contenido */}
@@ -73,14 +85,22 @@ const ClientMenuCard = ({ item }) => {
 
                     <button
                         onClick={handleAddToCart}
-                        disabled={added}
-                        className={`flex items-center space-x-2 px-5 py-3 rounded-lg font-semibold transition-all transform active:scale-95 ${
-                            added
-                                ? 'bg-green-500 text-white'
-                                : 'bg-mana-brown text-white hover:bg-mana-gold/30 hover:shadow-lg hover:-translate-y-0.5'
+                        disabled={added || !isAvailable}
+                        className={`flex items-center space-x-2 px-5 py-3 rounded-lg font-semibold transition-all transform ${
+                            !isAvailable
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : added
+                                    ? 'bg-green-500 text-white'
+                                    : 'bg-mana-brown text-white hover:bg-mana-gold/30 hover:shadow-lg hover:-translate-y-0.5 active:scale-95'
                         }`}
+                        title={!isAvailable ? closedMessage : ''}
                     >
-                        {added ? (
+                        {!isAvailable ? (
+                            <>
+                                <Clock size={18} />
+                                <span>Cerrado</span>
+                            </>
+                        ) : added ? (
                             <>
                                 <Check size={18} />
                                 <span>Agregado</span>
@@ -93,6 +113,13 @@ const ClientMenuCard = ({ item }) => {
                         )}
                     </button>
                 </div>
+
+                {/* Mensaje de horario si no está disponible */}
+                {!isAvailable && closedMessage && (
+                    <p className="text-xs text-red-500 text-center mt-3">
+                        {closedMessage}
+                    </p>
+                )}
             </div>
         </div>
     );

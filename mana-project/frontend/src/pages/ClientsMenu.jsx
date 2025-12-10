@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Coffee, Utensils, Croissant, Loader2, Moon, Search } from 'lucide-react';
+import { Coffee, Utensils, Croissant, Loader2, Moon, Search, Clock, AlertTriangle, XCircle } from 'lucide-react';
 import ClientMenuCard from '../components/ClientMenuCard';
 
 const ClientsMenu = () => {
@@ -8,6 +8,85 @@ const ClientsMenu = () => {
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('todos');
     const [searchTerm, setSearchTerm] = useState("");
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    // Horarios de cada categoría (en minutos desde medianoche)
+    const schedules = {
+        desayuno: { start: 7 * 60 + 30, end: 10 * 60 + 40, label: 'Desayunos', hours: '7:30 AM - 10:40 AM' },
+        almuerzo: { start: 11 * 60 + 45, end: 15 * 60, label: 'Almuerzos', hours: '11:45 AM - 3:00 PM' },
+        cena: { start: 17 * 60, end: 21 * 60, label: 'Cenas', hours: '5:00 PM - 9:00 PM' },
+        cafeteria: { start: 7 * 60 + 30, end: 21 * 60, label: 'Cafetería', hours: '7:30 AM - 9:00 PM' }, // Disponible todo el día
+    };
+
+    // Actualizar hora cada minuto
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 60000);
+        return () => clearInterval(timer);
+    }, []);
+
+    // Obtener minutos desde medianoche
+    const getMinutesSinceMidnight = () => {
+        return currentTime.getHours() * 60 + currentTime.getMinutes();
+    };
+
+    // Verificar estado del horario de una categoría
+    const getCategoryStatus = (categoryId) => {
+        if (categoryId === 'todos' || categoryId === 'cafeteria') {
+            // Cafetería siempre disponible durante horario general
+            const schedule = schedules.cafeteria;
+            const now = getMinutesSinceMidnight();
+            if (now < schedule.start || now >= schedule.end) {
+                return { status: 'closed', message: 'Cerrado' };
+            }
+            return { status: 'open', message: null };
+        }
+
+        const schedule = schedules[categoryId];
+        if (!schedule) return { status: 'open', message: null };
+
+        const now = getMinutesSinceMidnight();
+        const minutesUntilClose = schedule.end - now;
+        const minutesUntilOpen = schedule.start - now;
+
+        // Cerrado
+        if (now < schedule.start || now >= schedule.end) {
+            if (now < schedule.start) {
+                return { 
+                    status: 'closed', 
+                    message: `Abre a las ${formatTime(schedule.start)}`,
+                    nextOpen: formatTime(schedule.start)
+                };
+            }
+            return { 
+                status: 'closed', 
+                message: 'Cerrado por hoy',
+                nextOpen: null
+            };
+        }
+
+        // Por cerrar (menos de 30 minutos)
+        if (minutesUntilClose <= 30 && minutesUntilClose > 0) {
+            return { 
+                status: 'closing', 
+                message: `¡Cierra en ${minutesUntilClose} min!`,
+                minutesLeft: minutesUntilClose
+            };
+        }
+
+        // Abierto
+        return { status: 'open', message: null };
+    };
+
+    // Formatear minutos a hora legible
+    const formatTime = (minutes) => {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+        return `${displayHours}:${mins.toString().padStart(2, '0')} ${period}`;
+    };
 
     const categories = [
         { id: 'todos', label: 'Todos', icon: Utensils },
@@ -77,6 +156,7 @@ const ClientsMenu = () => {
                         {categories.map((cat) => {
                             const Icon = cat.icon;
                             const isActive = activeCategory === cat.id;
+                            const status = getCategoryStatus(cat.id);
 
                             return (
                                 <button
@@ -85,11 +165,21 @@ const ClientsMenu = () => {
                                         setActiveCategory(cat.id);
                                         setSearchTerm("");
                                     }}
-                                    className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl min-w-[90px] transition-all duration-300 transform hover:scale-105 ${isActive
+                                    className={`relative flex flex-col items-center gap-2 px-4 py-3 rounded-xl min-w-[90px] transition-all duration-300 transform hover:scale-105 ${isActive
                                         ? 'bg-[#8C705F] text-white shadow-lg scale-105'
-                                        : 'bg-gray-100 text-gray-500 hover:bg-[#F0EBE0] hover:text-[#6B5D4D]'
+                                        : status.status === 'closed' && cat.id !== 'todos'
+                                            ? 'bg-gray-200 text-gray-400'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-[#F0EBE0] hover:text-[#6B5D4D]'
                                         }`}
                                 >
+                                    {/* Indicador de estado */}
+                                    {cat.id !== 'todos' && (
+                                        <span className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
+                                            status.status === 'open' ? 'bg-green-500' :
+                                            status.status === 'closing' ? 'bg-yellow-500 animate-pulse' :
+                                            'bg-red-500'
+                                        }`} />
+                                    )}
                                     <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                                     <span className="text-xs font-semibold whitespace-nowrap">
                                         {cat.label}
@@ -98,6 +188,59 @@ const ClientsMenu = () => {
                             );
                         })}
                     </div>
+
+                    {/* Banner de estado de horario */}
+                    {activeCategory !== 'todos' && activeCategory !== 'cafeteria' && (() => {
+                        const status = getCategoryStatus(activeCategory);
+                        const schedule = schedules[activeCategory];
+                        
+                        if (status.status === 'closed') {
+                            return (
+                                <div className="max-w-2xl mx-auto mt-4 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                                    <div className="bg-red-100 p-2 rounded-full">
+                                        <XCircle className="w-5 h-5 text-red-500" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="font-semibold text-red-700">
+                                            {schedule.label} no disponible
+                                        </p>
+                                        <p className="text-sm text-red-600">
+                                            Horario: {schedule.hours}
+                                            {status.nextOpen && ` • Abre a las ${status.nextOpen}`}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        
+                        if (status.status === 'closing') {
+                            return (
+                                <div className="max-w-2xl mx-auto mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3 animate-pulse">
+                                    <div className="bg-amber-100 p-2 rounded-full">
+                                        <AlertTriangle className="w-5 h-5 text-amber-600" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="font-semibold text-amber-700">
+                                            ¡{schedule.label} cierra pronto!
+                                        </p>
+                                        <p className="text-sm text-amber-600">
+                                            Quedan {status.minutesLeft} minutos para ordenar • Hasta las {formatTime(schedule.end)}
+                                        </p>
+                                    </div>
+                                    <Clock className="w-6 h-6 text-amber-500" />
+                                </div>
+                            );
+                        }
+                        
+                        return (
+                            <div className="max-w-2xl mx-auto mt-4 bg-green-50 border border-green-200 rounded-xl p-3 flex items-center justify-center gap-2">
+                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                <p className="text-sm text-green-700">
+                                    <span className="font-semibold">{schedule.label}</span> disponible • {schedule.hours}
+                                </p>
+                            </div>
+                        );
+                    })()}
 
                     {/* 2. Barra de Búsqueda */}
                     <div className="max-w-md mx-auto mt-4 relative">
@@ -150,15 +293,30 @@ const ClientsMenu = () => {
                 <div className="container mx-auto px-4 relative z-10">
                     {filteredItems.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                            {filteredItems.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="animate-fade-in"
-                                    style={{ animationDelay: `${filteredItems.indexOf(item) * 0.05}s` }}
-                                >
-                                    <ClientMenuCard item={item} />
-                                </div>
-                            ))}
+                            {filteredItems.map((item) => {
+                                // Verificar disponibilidad del item según su tipo
+                                const itemType = item.tipo?.toLowerCase();
+                                const itemStatus = getCategoryStatus(itemType);
+                                const schedule = schedules[itemType];
+                                const isAvailable = itemStatus.status !== 'closed';
+                                const closedMessage = !isAvailable && schedule 
+                                    ? `Disponible: ${schedule.hours}` 
+                                    : '';
+
+                                return (
+                                    <div
+                                        key={item.id}
+                                        className="animate-fade-in"
+                                        style={{ animationDelay: `${filteredItems.indexOf(item) * 0.05}s` }}
+                                    >
+                                        <ClientMenuCard 
+                                            item={item} 
+                                            isAvailable={isAvailable}
+                                            closedMessage={closedMessage}
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="text-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl mx-4 border border-[#E8E4D9]">
