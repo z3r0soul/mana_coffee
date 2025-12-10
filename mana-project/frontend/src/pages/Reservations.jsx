@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Minus, Plus, Calendar, Clock, Users, User, Phone, Mail, CalendarDays, CheckCircle } from "lucide-react";
+import { Minus, Plus, Calendar, Clock, Users, User, Phone, Mail, CalendarDays, CheckCircle, Loader2, LogIn, X } from "lucide-react";
 
 const API_URL = "http://localhost:4000/api";
 
 function Reservations() {
+  const navigate = useNavigate();
   const [personas, setPersonas] = useState(1);
   const [fecha, setFecha] = useState("");
   const [hora, setHora] = useState("");
@@ -15,17 +17,72 @@ function Reservations() {
   const [step, setStep] = useState(1);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
+  const [horariosDisponibles, setHorariosDisponibles] = useState([]);
+  const [horariosOcupados, setHorariosOcupados] = useState([]);
+  const [loadingHorarios, setLoadingHorarios] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const MAX_PERSONAS = 35;
   const MIN_PERSONAS = 1;
 
-  // Horarios disponibles (7:30 AM - 7:00 PM)
-  const horariosDisponibles = [
+  // Horarios base (7:30 AM - 7:00 PM)
+  const horariosBase = [
     "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
     "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00",
     "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
     "18:00", "18:30", "19:00"
   ];
+
+  // Verificar autenticación al cargar (silenciosamente)
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
+  const checkAuthentication = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/auth/profile`, {
+        withCredentials: true,
+      });
+      setIsAuthenticated(true);
+      setUserData(response.data);
+      // Pre-llenar datos del usuario si está autenticado
+      setNombre(`${response.data.nombre || ''} ${response.data.apellido || ''}`.trim());
+      setTelefono(response.data.telefono || '');
+      setEmail(response.data.email || '');
+    } catch (error) {
+      console.log("Usuario no autenticado");
+      setIsAuthenticated(false);
+    }
+  };
+
+  // Cargar disponibilidad cuando cambia la fecha
+  useEffect(() => {
+    if (fecha) {
+      fetchAvailability(fecha);
+    } else {
+      setHorariosDisponibles(horariosBase);
+      setHorariosOcupados([]);
+    }
+  }, [fecha]);
+
+  const fetchAvailability = async (selectedDate) => {
+    setLoadingHorarios(true);
+    setHora(""); // Limpiar hora seleccionada al cambiar fecha
+    try {
+      const response = await axios.get(`${API_URL}/reservations/availability?fecha=${selectedDate}`);
+      setHorariosDisponibles(response.data.horariosDisponibles);
+      setHorariosOcupados(response.data.horariosOcupados);
+    } catch (error) {
+      console.error("Error al verificar disponibilidad:", error);
+      // En caso de error, mostrar todos los horarios
+      setHorariosDisponibles(horariosBase);
+      setHorariosOcupados([]);
+    } finally {
+      setLoadingHorarios(false);
+    }
+  };
 
   const handlePersonasChange = (delta) => {
     setPersonas(prev => {
@@ -93,6 +150,12 @@ function Reservations() {
       return;
     }
 
+    // Verificar si está autenticado antes de enviar
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+
     setSubmitting(true);
 
     const reservaData = {
@@ -105,11 +168,24 @@ function Reservations() {
     };
 
     try {
-      await axios.post(`${API_URL}/reservations`, reservaData);
+      await axios.post(`${API_URL}/reservations`, reservaData, {
+        withCredentials: true, // Enviar cookie con token
+      });
       setSuccess(true);
     } catch (error) {
       console.error("Error al crear reserva:", error);
-      alert("Error al crear la reserva. Intenta nuevamente.");
+      if (error.response?.status === 401) {
+        // No autenticado
+        setShowLoginModal(true);
+      } else if (error.response?.status === 409) {
+        // Conflicto de horario
+        alert("Este horario ya no está disponible. Por favor selecciona otro horario.");
+        fetchAvailability(fecha); // Recargar disponibilidad
+        setStep(2); // Volver al paso de selección de hora
+        setHora("");
+      } else {
+        alert("Error al crear la reserva. Intenta nuevamente.");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -119,12 +195,63 @@ function Reservations() {
     setPersonas(1);
     setFecha("");
     setHora("");
-    setNombre("");
-    setTelefono("");
-    setEmail("");
+    if (userData) {
+      setNombre(`${userData.nombre || ''} ${userData.apellido || ''}`.trim());
+      setTelefono(userData.telefono || '');
+      setEmail(userData.email || '');
+    } else {
+      setNombre("");
+      setTelefono("");
+      setEmail("");
+    }
     setStep(1);
     setSuccess(false);
   };
+
+  // Modal de login requerido
+  const LoginModal = () => (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative animate-in fade-in zoom-in duration-200">
+        <button
+          onClick={() => setShowLoginModal(false)}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+        >
+          <X size={24} />
+        </button>
+        
+        <div className="text-center">
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <LogIn className="text-amber-600" size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Casi listo!</h2>
+          <p className="text-gray-600 mb-6">
+            Para confirmar tu reserva necesitas iniciar sesión o crear una cuenta.
+            Así podrás ver y gestionar todas tus reservaciones.
+          </p>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => navigate("/login", { state: { from: "/reservations" } })}
+              className="w-full bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-700 transition font-semibold flex items-center justify-center gap-2"
+            >
+              <LogIn size={20} />
+              Iniciar Sesión
+            </button>
+            <button
+              onClick={() => navigate("/register", { state: { from: "/reservations" } })}
+              className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-gray-200 transition font-semibold"
+            >
+              Crear Cuenta
+            </button>
+          </div>
+          
+          <p className="text-gray-400 text-xs mt-4">
+            Tu información de reserva se guardará mientras te registras
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 
   if (success) {
     return (
@@ -169,6 +296,9 @@ function Reservations() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-12 px-4">
+      {/* Modal de Login */}
+      {showLoginModal && <LoginModal />}
+      
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
@@ -313,22 +443,48 @@ function Reservations() {
                     <Clock size={16} />
                     Horario disponible: 7:30 AM - 7:00 PM
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {horariosDisponibles.map((h) => (
-                      <button
-                        key={h}
-                        type="button"
-                        onClick={() => setHora(h)}
-                        className={`py-3 px-2 rounded-xl text-sm font-medium transition-all ${
-                          hora === h
-                            ? 'bg-amber-600 text-white shadow-lg scale-105'
-                            : 'bg-gray-100 text-gray-700 hover:bg-amber-100 hover:text-amber-700'
-                        }`}
-                      >
-                        {formatHora(h)}
-                      </button>
-                    ))}
-                  </div>
+                  
+                  {loadingHorarios ? (
+                    <div className="flex items-center justify-center py-10">
+                      <Loader2 className="animate-spin text-amber-600" size={32} />
+                      <span className="ml-3 text-gray-600">Verificando disponibilidad...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-4 gap-2">
+                        {horariosBase.map((h) => {
+                          const isOcupado = horariosOcupados.includes(h);
+                          const isSelected = hora === h;
+                          
+                          return (
+                            <button
+                              key={h}
+                              type="button"
+                              onClick={() => !isOcupado && setHora(h)}
+                              disabled={isOcupado}
+                              className={`py-3 px-2 rounded-xl text-sm font-medium transition-all ${
+                                isSelected
+                                  ? 'bg-amber-600 text-white shadow-lg scale-105'
+                                  : isOcupado
+                                    ? 'bg-red-100 text-red-400 cursor-not-allowed line-through'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-amber-100 hover:text-amber-700'
+                              }`}
+                              title={isOcupado ? 'Horario no disponible - reserva cercana' : ''}
+                            >
+                              {formatHora(h)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      
+                      {horariosOcupados.length > 0 && (
+                        <p className="text-xs text-gray-500 mt-3 flex items-center gap-2">
+                          <span className="inline-block w-3 h-3 bg-red-100 rounded"></span>
+                          Horarios no disponibles (debe haber 2 horas entre reservas)
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
 

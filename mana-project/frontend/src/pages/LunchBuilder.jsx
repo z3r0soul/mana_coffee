@@ -4,6 +4,20 @@ import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 import imgTest from '../assets/FOTO3.jpeg';
 
 function LunchBuilder() {
+    const [showImageModal, setShowImageModal] = useState(false);
+
+    // Verificar si está en horario permitido (11:45 AM - 3:00 PM)
+    const isWithinOrderTime = () => {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const currentTime = hours * 60 + minutes; // Convertir a minutos desde medianoche
+        
+        const startTime = 11 * 60 + 45; // 11:45 AM
+        const endTime = 15 * 60; // 3:00 PM
+        
+        return currentTime >= startTime && currentTime <= endTime;
+    };
 
     const dailyMenu = {
         date: new Date().toLocaleDateString('es-CO', {
@@ -46,10 +60,8 @@ function LunchBuilder() {
         sideDishes: [],
         soup: null,
         juice: null,
-        includeRice: true,
         includeSoup: true,
-        includeJuice: true,
-        includeIcopor: false
+        includeJuice: true
     });
 
     // Datos del cliente
@@ -80,14 +92,6 @@ function LunchBuilder() {
         if (order.juice && order.includeJuice) {
             const juice = dailyMenu.juices.find(j => j.id === order.juice);
             total += juice?.price || 0;
-        }
-
-        if (order.includeIcopor) {
-            total += RESTAURANT_INFO.prices.icopor;
-        }
-
-        if (!order.includeRice) {
-            total -= 500; // Descuento por no incluir arroz
         }
 
         return total;
@@ -143,7 +147,7 @@ function LunchBuilder() {
             : 'Sin jugo';
 
         const message = `
-        *PEDIDO DE ALMUERZO - MANA*
+*PEDIDO DE ALMUERZO - MANA*
 
 *Fecha:* ${dailyMenu.date}
 
@@ -156,12 +160,10 @@ function LunchBuilder() {
 - Acompañamientos: ${sideDishNames || 'Ninguno'}
 - Sopa: ${soupName}
 - Jugo: ${juiceName}
-- Arroz: ${order.includeRice ? 'Sí' : 'No'}
-${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
 
- -Total: $${totalPrice.toLocaleString('es-CO')}*
+💰 *Total: $${totalPrice.toLocaleString('es-CO')}*
 
- Confirmaré 2 horas antes de la entrega.
+✅ Confirmaré 2 horas antes de la entrega.
     `.trim();
 
         const whatsappUrl = `${SOCIAL_MEDIA.whatsapp}?text=${encodeURIComponent(message)}`;
@@ -194,12 +196,32 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                         {/* Formulario de armado */}
                         <div className="lg:col-span-2 space-y-6">
 
+                            {/* Alerta de horario */}
+                            {!isWithinOrderTime() && (
+                                <div className="bg-red-50 border-2 border-red-300 rounded-xl p-6 shadow-lg">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <AlertCircle className="text-red-600" size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-red-800 mb-2">
+                                                Fuera de Horario de Pedidos
+                                            </h3>
+                                            <p className="text-red-700">
+                                                Los pedidos de almuerzo solo están disponibles de <strong>11:45 AM a 3:00 PM</strong>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Imagen del día */}
                             <div className="bg-white rounded-xl overflow-hidden shadow-lg">
                                 <img
                                     src={dailyMenu.imageUrl}
                                     alt="Almuerzo del día"
-                                    className="w-full h-64 object-cover"
+                                    onClick={() => setShowImageModal(true)}
+                                    className="w-full h-64 object-cover cursor-pointer hover:opacity-90 transition"
                                 />
                                 <div className="p-6">
                                     <h3 className="text-2xl font-bold text-mana-brown mb-2">
@@ -207,6 +229,9 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                     </h3>
                                     <p className="text-gray-600">
                                         Precio base: <span className="font-bold text-mana-brown text-xl">${dailyMenu.basePrice.toLocaleString('es-CO')}</span>
+                                    </p>
+                                    <p className="text-sm text-gray-500 mt-2">
+                                        Haz clic en la imagen para verla completa
                                     </p>
                                 </div>
                             </div>
@@ -373,35 +398,6 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                 </div>
                             </div>
 
-                            {/* Opciones Adicionales */}
-                            <div className="bg-white rounded-xl p-6 shadow-lg">
-                                <h3 className="text-xl font-bold text-mana-brown mb-4">
-                                    Opciones Adicionales
-                                </h3>
-                                <div className="space-y-3">
-                                    <label className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-mana-brown transition-all">
-                                        <span className="font-medium text-gray-800">¿Incluir arroz?</span>
-                                        <input
-                                            type="checkbox"
-                                            checked={order.includeRice}
-                                            onChange={(e) => setOrder({ ...order, includeRice: e.target.checked })}
-                                            className="w-5 h-5 text-mana-gold rounded"
-                                        />
-                                    </label>
-                                    <label className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-mana-brown transition-all">
-                                        <div>
-                                            <span className="font-medium text-gray-800">El icopor esta incluido en el domicilio</span>
-                                            <p className="text-sm text-gray-500">+${RESTAURANT_INFO.prices.icopor.toLocaleString('es-CO')}</p>
-                                        </div>
-                                        <input
-                                            type="checkbox"
-                                            checked={order.includeIcopor}
-                                            onChange={(e) => setOrder({ ...order, includeIcopor: e.target.checked })}
-                                            className="w-5 h-5 text-mana-gold rounded"
-                                        />
-                                    </label>
-                                </div>
-                            </div>
                         </div>
 
                         {/* Resumen del Pedido */}
@@ -454,18 +450,6 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                                 </span>
                                             </div>
                                         )}
-                                        {order.includeIcopor && (
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-600">Icopor</span>
-                                                <span className="font-medium">${RESTAURANT_INFO.prices.icopor.toLocaleString('es-CO')}</span>
-                                            </div>
-                                        )}
-                                        {!order.includeRice && (
-                                            <div className="flex justify-between text-green-600">
-                                                <span>Sin arroz (desc.)</span>
-                                                <span className="font-medium">-$500</span>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
 
@@ -480,24 +464,19 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                 </div>
 
                                 {/* Alerta de confirmación */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex gap-3">
-                                    <AlertCircle className="text-blue-500 flex-shrink-0" size={20} />
-                                    <p className="text-xs text-blue-700">
-                                        Recuerda confirmar tu pedido 2 horas antes de la entrega
-                                    </p>
-                                </div>
+                                
 
                                 {/* Botón de Enviar */}
                                 <button
                                     onClick={sendOrder}
-                                    disabled={!isFormValid()}
-                                    className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center gap-2 transition-all ${isFormValid()
+                                    disabled={!isFormValid() || !isWithinOrderTime()}
+                                    className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center gap-2 transition-all ${isFormValid() && isWithinOrderTime()
                                         ? 'bg-green-500 text-white hover:bg-green-600 hover:shadow-lg active:scale-95'
                                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                         }`}
                                 >
                                     <ShoppingCart size={24} />
-                                    Enviar Pedido por WhatsApp
+                                    Ordenar
                                 </button>
 
                                 {!isFormValid() && (
@@ -505,11 +484,39 @@ ${order.includeIcopor ? '• Icopor: Sí (+$1,000)' : ''}
                                         Completa los campos requeridos (*)
                                     </p>
                                 )}
+                                {!isWithinOrderTime() && (
+                                    <p className="text-sm text-red-500 text-center mt-3">
+                                        Horario de pedidos: 11:45 AM - 3:00 PM
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Imagen Completa */}
+            {showImageModal && (
+                <div 
+                    className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+                    onClick={() => setShowImageModal(false)}
+                >
+                    <div className="relative max-w-4xl w-full">
+                        <button
+                            onClick={() => setShowImageModal(false)}
+                            className="absolute -top-12 right-0 text-white hover:text-gray-300 text-lg font-bold"
+                        >
+                            ✕ Cerrar
+                        </button>
+                        <img
+                            src={dailyMenu.imageUrl}
+                            alt="Almuerzo del día - Vista completa"
+                            className="w-full h-auto rounded-lg shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
