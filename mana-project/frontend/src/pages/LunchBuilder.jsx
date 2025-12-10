@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Check, Plus, Minus, ShoppingCart, Clock, AlertCircle } from 'lucide-react';
 import { RESTAURANT_INFO, SOCIAL_MEDIA } from '../utils/constants';
 import imgTest from '../assets/FOTO3.jpeg';
+import axios from 'axios';
 
 function LunchBuilder() {
     const [showImageModal, setShowImageModal] = useState(false);
+    const [lunchImage, setLunchImage] = useState(imgTest); // Imagen por defecto
 
     // Verificar si está en horario permitido (11:45 AM - 3:00 PM)
     const isWithinOrderTime = () => {
@@ -19,6 +21,23 @@ function LunchBuilder() {
         return currentTime >= startTime && currentTime <= endTime;
     };
 
+    // Cargar imagen del almuerzo desde la base de datos
+    useEffect(() => {
+        const fetchLunchImage = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/lunch/today');
+                if (response.data.imageUrl) {
+                    setLunchImage(response.data.imageUrl);
+                }
+            } catch (error) {
+                console.error('Error al cargar imagen del almuerzo:', error);
+                // Mantener imagen por defecto si hay error
+            }
+        };
+        
+        fetchLunchImage();
+    }, []);
+
     const dailyMenu = {
         date: new Date().toLocaleDateString('es-CO', {
             weekday: 'long',
@@ -27,7 +46,7 @@ function LunchBuilder() {
             day: 'numeric'
         }),
         basePrice: 14000,
-        imageUrl: imgTest, /*TESTEO DE PRECIOS*/
+        imageUrl: lunchImage,
         mainDishes: [
             { id: 'main1', name: 'Pechuga a la Plancha', price: 0 },
             { id: 'main2', name: 'Carne Asada', price: 2000 },
